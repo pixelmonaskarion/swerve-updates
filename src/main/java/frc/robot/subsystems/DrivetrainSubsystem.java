@@ -46,7 +46,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         breakStatus = false;
       
         resetEncoders();
-        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), 0, 0);
 
         
     }

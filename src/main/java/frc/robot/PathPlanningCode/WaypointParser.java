@@ -15,13 +15,11 @@ public class WaypointParser {
         final double chassisPathweaverOffset = 8.1;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file_path.toFile()))) {
-            String contents = reader.readLine();
             boolean firstLine = false;
 
-            while (contents != null) {
+            for (String contents = reader.readLine(); contents != null; contents = reader.readLine()) {
                 if (!firstLine || !contents.contains(",")) {
                     firstLine = true;
-                    contents = reader.readLine();
                     continue;
                 }
 
