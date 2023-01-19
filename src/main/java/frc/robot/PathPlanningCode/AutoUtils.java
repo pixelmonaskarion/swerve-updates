@@ -19,7 +19,7 @@ public class AutoUtils {
     }
 
     public SequentialCommandGroup runPath(String file_path) {
-      
+
       RamseteCommand ramseteCommand = 
         new RamseteCommand(trajectory.generateTrajectory(
           file_path, 
@@ -35,7 +35,8 @@ public class AutoUtils {
         new PIDController(DriveConstants.kD, DriveConstants.kI, 0),
         new PIDController(DriveConstants.kD, DriveConstants.kI, 0),
         drivetrainSubsystem::tankDriveVolts, drivetrainSubsystem);
-      
+        
+        drivetrainSubsystem.resetEncoders();
           //stop robot after autonomous trajectory is followed
       return ramseteCommand.andThen(() -> drivetrainSubsystem.tankDriveVolts(0, 0));
     }

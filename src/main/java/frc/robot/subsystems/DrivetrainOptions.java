@@ -132,5 +132,12 @@ public class DrivetrainOptions extends RobotDriveBase {
         MathUtil.clamp(scaledValue, -1, 1); //sets bounds for scaledValue
         return scaledValue;
     }
+
+    public void tankDrive(double leftSpeed, double rightSpeed){
+
+        leftMotors.set(MathUtil.clamp(leftSpeed, -1, 1));
+        rightMotors.set(MathUtil.clamp(rightSpeed, -1, 1));
+        feed();
+    }
     
 }

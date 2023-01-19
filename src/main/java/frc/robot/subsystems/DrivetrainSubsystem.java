@@ -113,5 +113,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         drivetrain.feed();
     }
+
+    public void testAutoDrive(double left, double right) {
+        drivetrain.tankDrive(left, -right);
+    }
+
+    @Override
+    public void periodic() {
+        m_odometry.update(Rotation2d.fromDegrees(getHeading()), leftEncoder.getPosition(), rightEncoder.getPosition());
+    }
     
 }
