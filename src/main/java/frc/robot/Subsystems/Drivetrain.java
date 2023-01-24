@@ -7,7 +7,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -153,6 +155,22 @@ public class Drivetrain extends SubsystemBase {
     public void testDrive(double left, double right) {
         leftMotors.set(left);
         rightMotors.set(-right);
+    }
+
+    //tank drive volts method solely for following trajectories
+    public void tankDriveVolts(double leftVolts, double rightVolts){
+        double batteryVoltage = RobotController.getBatteryVoltage();
+        if (Math.max(Math.abs(leftVolts),Math.abs(rightVolts))> batteryVoltage ){
+          leftVolts *= batteryVoltage /12.0;
+          rightVolts *= batteryVoltage/ 12.0;
+        }
+        leftMotors.setVoltage(leftVolts);
+        rightMotors.setVoltage(rightVolts);
+    }
+
+    public DifferentialDriveWheelSpeeds getWheelSpeeds(){
+        double cmPerTick =  Constants.WHEEL_CIRCUMFERENCE * 100 / (leftEncoder.getCountsPerRevolution() *4);
+        return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity()*cmPerTick/100,rightEncoder.getVelocity()*cmPerTick/100);
     }
 
     public void resetEncoders() {
