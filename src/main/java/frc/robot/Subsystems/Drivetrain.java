@@ -154,7 +154,7 @@ public class Drivetrain extends SubsystemBase {
     //simple drive method for auto testing, etc
     public void testDrive(double left, double right) {
         leftMotors.set(left);
-        rightMotors.set(-right);
+        rightMotors.set(right);
     }
 
     //tank drive volts method solely for following trajectories

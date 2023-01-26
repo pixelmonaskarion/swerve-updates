@@ -13,6 +13,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -28,10 +29,12 @@ public class AutoUtils {
         autoChooser.setDefaultOption("Simple Drive", AutoModes.SIMPLE_DRIVE);
         autoChooser.addOption("Simple Ramsete", AutoModes.SIMPLE_RAMSETE);
         autoChooser.addOption("Custom Ramsete", AutoModes.CUSTOM_RAMSETE);
+
+        SmartDashboard.putData("auto choices", autoChooser);
     }
 
     public Command simpleCmdGrp(Drivetrain drivetrain) {
-        return new RunCommand(() -> drivetrain.testDrive(0.5, 0.5), drivetrain);
+        return new RunCommand(() -> drivetrain.testDrive(0.1, 0.1), drivetrain).withTimeout(5);
     }
 
     public Command simpleRamseteConfig(Drivetrain drivetrain) {

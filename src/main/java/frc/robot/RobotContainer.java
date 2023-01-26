@@ -20,8 +20,8 @@ public class RobotContainer {
         powerDistribution.clearStickyFaults();
 
         drivetrain.setDefaultCommand(new SimpleDriveCommand(drivetrain, 
-        () -> -joystick.getRawAxis(0),
-        () -> -joystick.getRawAxis(1)));
+        () -> -joystick.getRawAxis(1),
+        () -> -joystick.getRawAxis(0)));
     }
 
     public Drivetrain getRobotDrive() {
@@ -33,6 +33,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new RunCommand(() -> drivetrain.testDrive(0.5, 0.5), drivetrain).withTimeout(5);
+        return new RunCommand(() -> drivetrain.testDrive(0.1, 0.1), drivetrain).withTimeout(5);
     }
 }
