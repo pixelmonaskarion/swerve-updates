@@ -17,7 +17,7 @@ public class RobotContainer {
     private Joystick armJoystick = new Joystick(Constants.JOYSTICK_PORT2);
 
     private final Drivetrain drivetrain = new Drivetrain();
-    private final SimpleArm simpleArm = new SimpleArm();
+    //private final SimpleArm simpleArm = new SimpleArm();
     private final Arm arm = new Arm(1.31);
 
     private final PowerDistribution powerDistribution = new PowerDistribution();
@@ -35,7 +35,7 @@ public class RobotContainer {
         () -> -joystick.getRawAxis(1),
         () -> -joystick.getRawAxis(0)));
 
-        simpleArm.setDefaultCommand(new RunCommand(() -> simpleArm.moveArm(getArmToggle())));
+        //simpleArm.setDefaultCommand(new RunCommand(() -> simpleArm.moveArm(getArmToggle())));
     }
 
     public int getArmToggle() {
