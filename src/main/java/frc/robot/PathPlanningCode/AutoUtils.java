@@ -102,6 +102,10 @@ public class AutoUtils {
             return simpleCmdGrp(drivetrain);
     }
   }
+
+  public SendableChooser<AutoModes> getChooser() {
+    return autoChooser;
+  }
     
 
     private enum AutoModes {
