@@ -37,6 +37,7 @@ public class AutoUtils {
         return new RunCommand(() -> drivetrain.testDrive(0.1, 0.1), drivetrain).withTimeout(5);
     }
 
+    //to do: add velocity and acceleration constraints
     public Command simpleRamseteConfig(Drivetrain drivetrain) {
         TrajectoryConfig config =
         new TrajectoryConfig(
@@ -49,6 +50,7 @@ public class AutoUtils {
             List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
             new Pose2d(3, 0, new Rotation2d(0)),
             config);
+
        RamseteCommand ramseteCommand =
         new RamseteCommand(
             traj,

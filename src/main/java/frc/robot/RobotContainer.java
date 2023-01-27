@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Commands.SimpleArmCommand;
+import frc.robot.Commands.ArmCommand;
 import frc.robot.Commands.SimpleDriveCommand;
 import frc.robot.PathPlanningCode.AutoUtils;
 import frc.robot.Subsystems.Arm;
@@ -51,8 +51,11 @@ public class RobotContainer {
     public void configureButtonBindings() {
         
         new Trigger(() -> armJoystick.getRawButton(6))
-            .onTrue(new RunCommand(() -> arm.setGoal(2), arm)
-                .andThen(new SimpleArmCommand(arm)));
+            .onTrue(new ArmCommand(arm));
+
+        //simple trigger to test if it works for joysticks
+        new Trigger(() -> armJoystick.getRawButton(5))
+            .whileTrue((new RunCommand(() -> drivetrain.testDrive(0.2, 0.2), drivetrain)));
     }
 
     public Drivetrain getRobotDrive() {

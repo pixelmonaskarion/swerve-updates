@@ -1,5 +1,7 @@
 package frc.robot.Subsystems;
 
+import javax.swing.plaf.nimbus.State;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -49,6 +51,8 @@ public class Arm extends SubsystemBase {
         return armMotor.getEncoder().getPosition();
     }
 
+
+    //feedforward decreases as arm approaches setpoint
     public void useOutput(double output, TrapezoidProfile.State setpoint) {
         double feedforward = armFeedforward.calculate(setpoint.position, setpoint.velocity);
         armMotor.set(output + feedforward);
@@ -61,12 +65,16 @@ public class Arm extends SubsystemBase {
 
     public void disable() {
         enabled = false;
+        useOutput(0, new TrapezoidProfile.State());
     }
     
     public boolean isEnabled() {
-        return isEnabled();
+        return enabled;
     }
 
+    public CANSparkMax getArmMotor() {
+        return armMotor;
+    }
 
     public ProfiledPIDController getController() {
         return controller;
