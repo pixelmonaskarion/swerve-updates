@@ -18,7 +18,7 @@ public class RobotContainer {
 
     private final Drivetrain drivetrain = new Drivetrain();
     //private final SimpleArm simpleArm = new SimpleArm();
-    private final Arm arm = new Arm(1.31);
+    private final Arm arm = new Arm(0);
 
     private final PowerDistribution powerDistribution = new PowerDistribution();
     private final AutoUtils autoUtils = new AutoUtils();
@@ -50,8 +50,13 @@ public class RobotContainer {
 
     public void configureButtonBindings() {
         
+        //move arm down 
+        new Trigger(() -> armJoystick.getRawButton(7))
+            .onTrue(new ArmCommand(arm, 1.31));
+
+        //move arm up
         new Trigger(() -> armJoystick.getRawButton(6))
-            .onTrue(new ArmCommand(arm));
+            .onTrue(new ArmCommand(arm, -1.31));
 
         //simple trigger to test if it works for joysticks
         new Trigger(() -> armJoystick.getRawButton(5))

@@ -1,6 +1,5 @@
 package frc.robot.Subsystems;
 
-import javax.swing.plaf.nimbus.State;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -10,7 +9,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
+//test for initiali output
 public class Arm extends SubsystemBase {
     private CANSparkMax armMotor;
     //uses trapezoidal motion profile to reduce jittering, note spark max encoders have units revs/sec
