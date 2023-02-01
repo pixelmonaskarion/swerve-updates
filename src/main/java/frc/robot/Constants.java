@@ -11,8 +11,8 @@ public class Constants {
 
     public static final int ARM_MOTOR_ID = 5;
 
-    public static final int JOYSTICK_PORT1 = 1;
-    public static final int JOYSTICK_PORT2 = 2;
+    public static final int JOYSTICK_PORT1 = 0;
+    public static final int JOYSTICK_PORT2 = 1;
 
     public static final int ANALOG_GYRO_PORT = 0;
 

@@ -1,13 +1,13 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Subsystems.Arm;
+import frc.robot.Subsystems.ArmSubsystem;
 
 public class ArmCommand extends CommandBase {
-    private Arm arm;
+    private ArmSubsystem arm;
     private double setpoint;
 
-    public ArmCommand(Arm arm, double setpoint) {
+    public ArmCommand(ArmSubsystem arm, double setpoint) {
         this.arm = arm;
         this.setpoint = setpoint;
 
@@ -15,21 +15,13 @@ public class ArmCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        arm.enable();
-        arm.setGoal(setpoint);
+    public void execute() {
+        arm.moveArm(() -> setpoint);
     }
 
-    @Override
-    public boolean isFinished() {
-        if (Math.abs(arm.getArmMotor().get()) < 0.1) {
-            return true;
-        }
-        return false;
-    }
     
     @Override
     public void end(boolean interrupted) {
-        arm.disable();
+        arm.getArmMotor().set(0.05);
     }
 }
