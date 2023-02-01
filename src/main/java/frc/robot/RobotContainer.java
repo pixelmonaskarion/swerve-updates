@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Subsystems.DriveTrain;
+import frc.robot.Subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveTrain m_robotDrive = new DriveTrain();
+  private final DriveSubsystem m_robotDrive;
 
   
     
@@ -44,16 +44,22 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    
+    //configureButtonBindings();
+
+    m_robotDrive = new DriveSubsystem();
+
+    // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(-m_driverController.getLeftY(), 0.06),
-                MathUtil.applyDeadband(-m_driverController.getLeftX(), 0.06),
-                MathUtil.applyDeadband(-m_driverController.getRightX(), 0.06),
-                false),
+                0.7*MathUtil.applyDeadband(-m_driverController.getLeftY(), 0.06),
+                0.7*MathUtil.applyDeadband(-m_driverController.getLeftX(), 0.06),
+                0.7*MathUtil.applyDeadband(-m_driverController.getRightX(), 0.06),
+                0.7*MathUtil.applyDeadband(-m_driverController.getRightY(), 0.06),
+                true, m_driverController.getAButton(), 
+                m_driverController.getRightBumper()),
             m_robotDrive));
   }
 
@@ -68,6 +74,10 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     
+  }
+
+  public DriveSubsystem getDrive() {
+    return m_robotDrive;
   }
 
   /**
@@ -113,6 +123,6 @@ public class RobotContainer {
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, 0, false, false, false));
   }
 }
