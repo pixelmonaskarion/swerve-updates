@@ -28,7 +28,7 @@ public class GenerateTrajectoryFromFile {
 
         config.setStartVelocity(initSpeed);
         config.setEndVelocity(finalSpeed);
-        config.setKinematics(new DifferentialDriveKinematics(Constants.DriveConstants.TRACK_WIDTH));
+        config.setKinematics(new DifferentialDriveKinematics(Constants.TRACK_WIDTH));
         for (TrajectoryConstraint constraint : constraints) {
             config.addConstraint(constraint);
         }
