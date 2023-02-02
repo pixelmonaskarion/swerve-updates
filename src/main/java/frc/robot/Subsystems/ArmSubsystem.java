@@ -68,7 +68,6 @@ public class ArmSubsystem extends SubsystemBase {
     double ff = SmartDashboard.getNumber("Feed Forward", 0);
     double max = SmartDashboard.getNumber("Max Output", 0);
     double min = SmartDashboard.getNumber("Min Output", 0);
-    //double rotations = SmartDashboard.getNumber("Set Rotations", 0);
     double rotations = MathUtil.clamp(joystickPos.getAsDouble(), -0.1, 0.1);
 
     // if PID coefficients on SmartDashboard have changed, write new values to controller
