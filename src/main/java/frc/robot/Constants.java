@@ -27,11 +27,19 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 2;
-    public static final double kMaxAngularSpeed = 1 * Math.PI; // radians per second
+    public static final double kMaxSpeedBase = 2;
+    public static final double kMaxSpeedScaleFactor = 0.7;
+    public static final double kMaxSpeedMetersPerSecond = kMaxSpeedBase*kMaxSpeedScaleFactor;
+
+    public static final double kMaxAngularSpeedBase = Math.PI;
+    public static final double kMaxAngularSpeedScaleFactor = 0.7;
+    public static final double kMaxAngularSpeed = kMaxAngularSpeedBase*kMaxAngularSpeedScaleFactor; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(26.5);
+    //scaling factor for the alternative turning mode
+    public static final int altTurnSmoothing = 20;
+
     // Distance between centers of right and left wheels on robot
     public static final double kWheelBase = Units.inchesToMeters(26.5);
     // Distance between front and back wheels on robot
