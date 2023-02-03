@@ -54,12 +54,11 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                0.7*MathUtil.applyDeadband(-m_driverController.getLeftY(), 0.06),
-                0.7*MathUtil.applyDeadband(-m_driverController.getLeftX(), 0.06),
-                0.7*MathUtil.applyDeadband(-m_driverController.getRightX(), 0.06),
-                0.7*MathUtil.applyDeadband(-m_driverController.getRightY(), 0.06),
-                true, m_driverController.getAButton(), 
-                m_driverController.getRightBumper()),
+                MathUtil.applyDeadband(-m_driverController.getLeftY(), 0.06),
+                MathUtil.applyDeadband(-m_driverController.getLeftX(), 0.06),
+                MathUtil.applyDeadband(-m_driverController.getRightX(), 0.06),
+                MathUtil.applyDeadband(-m_driverController.getRightY(), 0.06),
+                m_driverController.getRightBumper(), m_driverController.getAButton()),
             m_robotDrive));
   }
 
@@ -123,6 +122,6 @@ public class RobotContainer {
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, 0, false, false, false));
+    return swerveControllerCommand.andThen(() -> m_robotDrive.mainDrive(0, 0, 0));
   }
 }

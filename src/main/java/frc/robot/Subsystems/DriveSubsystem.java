@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.Subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,7 +49,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  public Gyro m_gyro = new WPI_Pigeon2(Constants.DriveConstants.gyroID);
+  public WPI_Pigeon2 m_gyro = new WPI_Pigeon2(Constants.DriveConstants.gyroID);
   private final PowerDistribution powerDistribution = new PowerDistribution();
 
   private double prevAngle = 0;
@@ -91,11 +91,9 @@ public class DriveSubsystem extends SubsystemBase {
     double ang = m_gyro.getRotation2d().getDegrees();
 
     SmartDashboard.putNumber("delta heading", ang - prevAngle);
-    System.out.println("angle: " + (ang - prevAngle));
 
     prevAngle = ang;
     SmartDashboard.putNumber("heading", ang);
-    System.out.println("angle: " + ang);
 
     SmartDashboard.putNumber("right stick angle", rightAngGoal);
     SmartDashboard.putNumber("turn direction", turnDir);
@@ -136,33 +134,38 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  public void drive(double xSpeed, double ySpeed, double xRot, double yRot, boolean fieldRelative, boolean resetGyro, boolean altTurn) {
-    if(resetGyro) {
-      zeroHeading();
+  public void drive(double xSpeed, double ySpeed, double xRot, double yRot, boolean altDrive, boolean centerGyro) {
+    if(centerGyro) zeroHeading();
+    if(altDrive) {
+      altDrive(xSpeed, ySpeed, xRot, yRot);
+    } else {
+      mainDrive(xSpeed, ySpeed, xRot);
     }
+  }
 
+  public void mainDrive(double xSpeed, double ySpeed, double xRot) {
+    double rot = xRot * DriveConstants.kMaxAngularSpeed;
+    move(xSpeed, ySpeed, rot);
+  }
+
+  public void altDrive(double xSpeed, double ySpeed, double xRot, double yRot) {
+    double rot = 0;
+    rightAngGoal = Math.atan2(xRot, yRot) * 180 / Math.PI;//convert to degrees
+    if(xRot != 0 || yRot != 0) {
+      double stickAng = Math.atan2(xRot, yRot) * 180 / Math.PI;//convert to degrees
+      //gets the difference in angle, then uses mod to make sure its from -180 to 180
+      rot = Math.tanh(((m_gyro.getAngle() + stickAng + 180) % 360 - 180) / DriveConstants.altTurnSmoothing) * DriveConstants.kMaxAngularSpeed;
+    }
+    turnDir = rot;
+    move(xSpeed, ySpeed, rot);
+  }
+
+  private void move(double xSpeed, double ySpeed, double rot) {
     // Adjust input based on max speed
     xSpeed *= DriveConstants.kMaxSpeedMetersPerSecond;
     ySpeed *= DriveConstants.kMaxSpeedMetersPerSecond;
-    double rot = 0;
-
-    rightAngGoal = Math.atan2(xRot, yRot) * 180 / Math.PI;
-
-    if(altTurn) {
-      if(xRot != 0 || yRot != 0) {
-        double stickAng = Math.atan2(xRot, yRot) * 180 / Math.PI;
-        rot = Math.tanh(((m_gyro.getAngle() + stickAng + 180) % 360 - 180) / 45) * DriveConstants.kMaxAngularSpeed;
-      }
-    } else {
-      rot = xRot * DriveConstants.kMaxAngularSpeed;
-    }
-
-    turnDir = rot;
-
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(-m_gyro.getAngle()))
-            : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(-m_gyro.getAngle())));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
