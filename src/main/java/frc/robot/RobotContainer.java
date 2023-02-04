@@ -34,8 +34,6 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive;
 
-  
-    
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -44,7 +42,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    //configureButtonBindings();
+    configureButtonBindings();
 
     m_robotDrive = new DriveSubsystem();
 
@@ -72,7 +70,6 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    
   }
 
   public DriveSubsystem getDrive() {
