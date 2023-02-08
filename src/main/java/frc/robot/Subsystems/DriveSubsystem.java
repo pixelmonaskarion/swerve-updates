@@ -51,8 +51,6 @@ public class DriveSubsystem extends SubsystemBase {
   private double rightAngGoal = 0;
   private double turnDir = 0;
 
-
-
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
@@ -68,7 +66,6 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
 
     powerDistribution.clearStickyFaults();
-    // SmartDashboard.putNumber("heading", m_gyro.getAngle());
   }
 
   @Override
@@ -125,9 +122,10 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the
-   *                      field.
+   * @param xRot          The x-position of the right joystick, used as rotational speed in normal turning
+   * @param yRot          the y-position of the right joystick, used for getting the direction to point to in alt-turning
+   * @param altDrive      whether to use alternative driving
+   * @param centerGyro    whether to center the gyro to the direction the robot is currently facing
    */
   public void drive(double xSpeed, double ySpeed, double xRot, double yRot, boolean altDrive, boolean centerGyro) {
     if(centerGyro) zeroHeading();
@@ -145,9 +143,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void altDrive(double xSpeed, double ySpeed, double xRot, double yRot) {
     double rot = 0;
-    rightAngGoal = Math.atan2(xRot, yRot) * 180 / Math.PI;//convert to degrees
+    //convert to degrees
+    rightAngGoal = Math.atan2(xRot, yRot) * 180 / Math.PI;
     if(xRot != 0 || yRot != 0) {
-      double stickAng = Math.atan2(xRot, yRot) * 180 / Math.PI;//convert to degrees
+      //convert to degrees
+      double stickAng = Math.atan2(xRot, yRot) * 180 / Math.PI;
       //gets the difference in angle, then uses mod to make sure its from -180 to 180
       rot = Math.tanh(((m_gyro.getAngle() + stickAng + 180) % 360 - 180) / DriveConstants.altTurnSmoothing) * DriveConstants.kMaxAngularSpeed;
     }
