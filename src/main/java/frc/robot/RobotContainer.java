@@ -57,7 +57,7 @@ public class RobotContainer {
     new Trigger(() -> m_driverController.getRawButton(Constants.BButton))
         .whileTrue(new VisionTurnCommand(m_vision, m_robotDrive, m_driverController));
         
-    new Trigger(() -> m_driverController.getRawButton(Constants.BButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.YButton))
       .whileTrue(new VisionTurnTranslateCommand(m_vision, m_robotDrive, m_driverController));
 
   }
