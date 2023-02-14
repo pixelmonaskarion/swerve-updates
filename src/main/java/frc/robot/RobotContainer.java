@@ -4,6 +4,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Commands.VisionTurnCommand;
+import frc.robot.Commands.VisionTurnTranslateCommand;
 import frc.robot.Constants.OIConstants;
 import frc.robot.PathPlanningCode.AutoUtils;
 import frc.robot.Subsystems.DriveSubsystem;
@@ -56,6 +57,8 @@ public class RobotContainer {
     new Trigger(() -> m_driverController.getRawButton(Constants.BButton))
         .whileTrue(new VisionTurnCommand(m_vision, m_robotDrive, m_driverController));
         
+    new Trigger(() -> m_driverController.getRawButton(Constants.BButton))
+      .whileTrue(new VisionTurnTranslateCommand(m_vision, m_robotDrive, m_driverController));
 
   }
 
