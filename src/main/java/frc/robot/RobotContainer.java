@@ -1,19 +1,16 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Commands.VisionTurnCommand;
-import frc.robot.Commands.VisionTurnTranslateCommand;
 import frc.robot.Constants.OIConstants;
 import frc.robot.PathPlanningCode.AutoUtils;
 import frc.robot.Subsystems.DriveSubsystem;
 import frc.robot.Subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -40,7 +37,6 @@ public class RobotContainer {
 
     m_robotDrive = new DriveSubsystem();
     m_vision = new VisionSubsystem();
-
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -53,21 +49,15 @@ public class RobotContainer {
                 MathUtil.applyDeadband(-m_driverController.getRightY(), 0.06),
                 m_driverController.getRightBumper(), m_driverController.getAButton()),
             m_robotDrive));
-
-    
   }
 
 
   private void configureButtonBindings() {
-    //button b does turn auto alignment
-    new Trigger(() -> m_driverController.getRawButton(Constants.OIConstants.BButton))
-      .whileTrue(new VisionTurnCommand(m_vision, m_robotDrive, m_driverController));
-    //button y does turn and translate auto alignment
-    new Trigger(() -> m_driverController.getRawButton(Constants.OIConstants.YButton))
-      .whileTrue(new VisionTurnTranslateCommand(m_vision, m_robotDrive, m_driverController));
+    new Trigger(() -> m_driverController.getRawButton(Constants.BButton))
+        .whileTrue(new VisionTurnCommand(m_vision, m_robotDrive, m_driverController));
+        
 
-
-  } 
+  }
 
   public DriveSubsystem getDrive() {
     return m_robotDrive;
