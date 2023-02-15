@@ -124,6 +124,10 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int AButton = 1;
+    public static final int BButton = 2;
+    public static final int YButton = 3;
+    public static final int ZButton = 4;
   }
 
   public static final class AutoConstants {
@@ -144,9 +148,23 @@ public final class Constants {
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
 
+  //to do: change to accurate value
+  public static final double CAMERA_HEIGHT = 2;
+  public static final double TARGET_HEIGHT = 1;
+  public static final double CAMERA_PITCH_RADIANS = 0;
+  public static final double GOAL_RANGE = 1.5;
+
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
-  public static final int ARM_MOTOR_ID = 0;
+  public static final int ELEVATOR__MOTOR_ID_MASTER = 0;
+  public static final int ELEVATOR__MOTOR_ID_SLAVE = 1;
+
+  //solenoid ports on PCM
+  public static final int SOLENOID_P1 = 0;
+  public static final int SOLENOID_P2 = 1;
+  public static final int SOLENOID_P3 = 2;
+  public static final int SOLENOID_P4 = 3;
+
 }

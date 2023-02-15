@@ -54,10 +54,10 @@ public class RobotContainer {
 
 
   private void configureButtonBindings() {
-    new Trigger(() -> m_driverController.getRawButton(Constants.BButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.OIConstants.BButton))
         .whileTrue(new VisionTurnCommand(m_vision, m_robotDrive, m_driverController));
         
-    new Trigger(() -> m_driverController.getRawButton(Constants.YButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.OIConstants.YButton))
       .whileTrue(new VisionTurnTranslateCommand(m_vision, m_robotDrive, m_driverController));
 
   }
