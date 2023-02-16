@@ -10,7 +10,7 @@ import frc.robot.Constants;
 
 
 public class ArmSubsystem extends SubsystemBase {
-    private DoubleSolenoid sol1;
+   /*  private DoubleSolenoid sol1;
     private DoubleSolenoid sol2;
     private DoubleSolenoid sol3;
     private DoubleSolenoid sol4;
@@ -50,6 +50,6 @@ public class ArmSubsystem extends SubsystemBase {
         for (DoubleSolenoid sol : sols) {
             sol.set(Value.kOff);
         }
-    }
+    }*/
 
 }

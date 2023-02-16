@@ -152,7 +152,7 @@ public final class Constants {
   public static final double CAMERA_HEIGHT = 2;
   public static final double TARGET_HEIGHT = 1;
   public static final double CAMERA_PITCH_RADIANS = 0;
-  public static final double GOAL_RANGE = 1.5;
+  public static final double GOAL_RANGE = 1;
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;

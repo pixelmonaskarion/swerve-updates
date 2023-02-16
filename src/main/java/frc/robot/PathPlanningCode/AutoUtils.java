@@ -40,7 +40,7 @@ public class AutoUtils {
 
 
     public Command simpleCmdGrp(RobotContainer container) {
-        return new RunCommand(() -> container.getDrive().drive(0, 0.8, 0, 0, false, true), container.getDrive()).withTimeout(5);
+        return new RunCommand(() -> container.getDrive().mainDrive(0.8, 0, 0), container.getDrive()).withTimeout(5);
     }
 
 

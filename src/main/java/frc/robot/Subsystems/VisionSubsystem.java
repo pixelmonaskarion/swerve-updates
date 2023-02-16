@@ -45,7 +45,7 @@ public class VisionSubsystem extends SubsystemBase {
 
 
     public VisionSubsystem() {
-        camera = new PhotonCamera("photonPi"); 
+        camera = new PhotonCamera("lol"); 
         
         List<Pair<PhotonCamera, Transform3d>> camPair = new ArrayList<>();
         camPair.add(new Pair<>(camera, new Transform3d()));

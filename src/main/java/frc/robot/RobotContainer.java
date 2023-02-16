@@ -4,7 +4,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Commands.VisionTurnCommand;
-import frc.robot.Commands.VisionTurnTranslateCommand;
+import frc.robot.Commands.VisionTranslateCommand;
 import frc.robot.Constants.OIConstants;
 import frc.robot.PathPlanningCode.AutoUtils;
 import frc.robot.Subsystems.DriveSubsystem;
@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive;
+  //private final VisionSubsystem m_vision;
   private final VisionSubsystem m_vision;
 
   private final AutoUtils autoUtils = new AutoUtils();
@@ -34,10 +35,14 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    configureButtonBindings();
+    
+    //SmartDashboard.putBoolean("BButton pressed", getController().getBButton());
 
     m_robotDrive = new DriveSubsystem();
+    //m_vision = new VisionSubsystem();
     m_vision = new VisionSubsystem();
+
+    configureButtonBindings();
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -54,16 +59,29 @@ public class RobotContainer {
 
 
   private void configureButtonBindings() {
-    new Trigger(() -> m_driverController.getRawButton(Constants.OIConstants.BButton))
-        .whileTrue(new VisionTurnCommand(m_vision, m_robotDrive, m_driverController));
-        
-    new Trigger(() -> m_driverController.getRawButton(Constants.OIConstants.YButton))
-      .whileTrue(new VisionTurnTranslateCommand(m_vision, m_robotDrive, m_driverController));
+
+      new Trigger(() -> m_driverController.getBButton())
+      .whileTrue(new VisionTurnCommand(m_vision, m_robotDrive, m_driverController));
+      
+   
+      new Trigger(() -> m_driverController.getYButton())
+      .onTrue(new VisionTranslateCommand(m_vision, m_robotDrive, m_driverController));
+
+    
 
   }
 
   public DriveSubsystem getDrive() {
     return m_robotDrive;
+  }
+ 
+  public VisionSubsystem getVision() {
+    return m_vision;
+  }
+
+
+  public XboxController getController() {
+    return m_driverController;
   }
 
   public AutoUtils getAutoRoutine() {
