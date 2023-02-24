@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.RobotContainer;
+import frc.robot.Commands.VisionTranslateCommand;
 import frc.robot.Commands.VisionTurnCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -29,15 +30,22 @@ import frc.robot.Constants.DriveConstants;
      * 
      * priority 2 auto:
      * go forward a bit -- score gamepiece
-     * --compound balance command (tiny backup, 180deg turn, arm down, elevator extended forward)
+     * rotate 180 degrees -- charge station balance command (tiny backup, arm down, elevator extended forward)
      * get onto charge station (dependent on starting position)
      * 
      * priority 3 auto:
      * go forward a bit -- score gamepiece
-     * get staged gamepiece and score it
+     * rotation 180 degrees
+     * drive to staged gamepiece -- intake staged gamepiece command (cone or cube)
+     * 
+     * priorty 4 auto:
+     * priority 3 auto + balance on charge station
+     * 
      * 
      * 
      * starting positions: left CS (charge station), center CS, right CS
+     * 
+     * assuming +x dir is forward and +y dir is right
      */
 
 
@@ -56,6 +64,9 @@ public class AutoUtils {
       autoChooser.addOption("Simple Trajectory", AutoModes.SIMPLE_TRAJECTORY);
       autoChooser.addOption("Auto Align Trajectory", AutoModes.AUTO_ALIGN_TRAJECTORY);
       autoChooser.addOption("Priority 1 Auto", AutoModes.PRIORITY_1_AUTO);
+      autoChooser.addOption("Priority 2 Auto", AutoModes.PRIORITY_2_AUTO);
+      autoChooser.addOption("Priority 3 Auto", AutoModes.PRIORITY_3_AUTO);
+      autoChooser.addOption("Priority 4 Auto", AutoModes.PRIORITY_4_AUTO);
 
       startPosChooser.setDefaultOption("Left of charge station", StartPos.LEFT_CS);
       startPosChooser.addOption("Middle of charge station", StartPos.MID_CS);
@@ -98,10 +109,32 @@ public class AutoUtils {
         .andThen(new VisionTurnCommand(container.getVision(), container.getDrive(), container.getController()));
     }
 
-    //to do: add score command
+    //to do: write score command (if for low level, no additional code is needed)
     public Command priorityOneAuto(RobotContainer container, StartPos startPos) {
       return simpleTrajectoryCommand(container, initDriveToScore())
+        //.andThen(new ScoreGamePieceCommand())
         .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
+    }
+
+    //to do: write charge station balance command
+    public Command priorityTwoAuto(RobotContainer container, StartPos startPos) {
+      return simpleTrajectoryCommand(container, initDriveToScore())
+        .andThen(simpleTrajectoryCommand(container, rotate180().concatenate(getOnChargeStation(startPos))));
+            //.alongWith(new ChargeStationBalanceCommand()));
+    }
+
+    public Command priorityThreeAuto(RobotContainer container, StartPos startPos) {
+      return simpleTrajectoryCommand(container, initDriveToScore())
+        .andThen(simpleTrajectoryCommand(container, rotate180().concatenate(driveToStagedGamePiece(startPos))))
+        //andThen(new IntakeGamePieceCommand())
+        .andThen(simpleTrajectoryCommand(container, rotate180()))
+        .andThen(new VisionTranslateCommand(container.getVision(), container.getDrive(), container.getController()));
+        //andThen(ScoreGamePieceCommand())
+    }
+
+    public Command priorityFourAuto(RobotContainer container, StartPos startPos) {
+      return priorityThreeAuto(container, startPos)
+        .andThen(simpleTrajectoryCommand(container, rotate180().concatenate(getOnChargeStation(startPos))));
     }
 
     //test
@@ -125,6 +158,10 @@ public class AutoUtils {
 
       return trajectory;
     }
+
+    private Trajectory rotate180() {
+      return TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0,0, new Rotation2d(180))), config);
+    }
     
     //drive 1 m forward
     private Trajectory initDriveToScore() {
@@ -142,24 +179,46 @@ public class AutoUtils {
       } else if (pos == StartPos.MID_CS) {
         trajectory = TrajectoryGenerator.generateTrajectory(
           new Pose2d(-0.5, 0, new Rotation2d(180)), 
-          List.of(new Translation2d(3.9, 5)), 
+          List.of(new Translation2d(3.9, -4)), 
           new Pose2d(2, 0, new Rotation2d(0)), config);
         return trajectory;
       }
       return null;
     }
-/* 
+
     private Trajectory getOnChargeStation(StartPos pos) {
       Trajectory trajectory;
         if (pos == StartPos.LEFT_CS) {
-
+          trajectory = TrajectoryGenerator.generateTrajectory(
+            List.of(new Pose2d(1, 2, new Rotation2d(0)), new Pose2d(0, -0.3, new Rotation2d(0))),
+            config);
+          return trajectory;
         } else if (pos == StartPos.MID_CS) {
-
+          trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(2.9, 0, new Rotation2d(0))), config);
+          return trajectory;
         } else if (pos == StartPos.RIGHT_CS) {
-
+          trajectory = TrajectoryGenerator.generateTrajectory(
+            List.of(new Pose2d(1, -2, new Rotation2d(0)), new Pose2d(0, 0.3, new Rotation2d(0))), config);
+          return trajectory;
         }
+        return null;
     }
-  */
+
+    private Trajectory driveToStagedGamePiece(StartPos pos) {
+      Trajectory trajectory;
+        if (pos == StartPos.LEFT_CS) {
+          trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(5.9, 0.2, new Rotation2d(0))), config);
+          return trajectory;
+        } else if (pos == StartPos.MID_CS) {
+          trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0, 1.8, new Rotation2d(0)), new Pose2d(5.9, 0, new Rotation2d(0))), config);
+          return trajectory;
+        } else if (pos == StartPos.RIGHT_CS) {
+          trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(5.9, -0.4, new Rotation2d(0))), config);
+          return trajectory;
+        }
+        return null;
+    }
+
 
   //start position chooser is fed into this for start position-dependent trajectories
   public Command chooseAuto(RobotContainer container, StartPos startPos) {
@@ -170,6 +229,12 @@ public class AutoUtils {
         return trajectoryAutoAlign(container, driveToScore());
       case PRIORITY_1_AUTO:
         return priorityOneAuto(container, startPos);
+      case PRIORITY_2_AUTO:
+        return priorityTwoAuto(container, startPos);
+      case PRIORITY_3_AUTO:
+        return priorityThreeAuto(container, startPos);
+      case PRIORITY_4_AUTO:
+        return priorityFourAuto(container, startPos);
       default:
         return simpleCmdGrp(container);
     }
@@ -193,7 +258,7 @@ public class AutoUtils {
     
 
   private enum AutoModes {
-    SIMPLE_DRIVE, SIMPLE_TRAJECTORY, AUTO_ALIGN_TRAJECTORY, PRIORITY_1_AUTO, PRIORITY_2_AUTO, PRIORITY_3_AUTO
+    SIMPLE_DRIVE, SIMPLE_TRAJECTORY, AUTO_ALIGN_TRAJECTORY, PRIORITY_1_AUTO, PRIORITY_2_AUTO, PRIORITY_3_AUTO, PRIORITY_4_AUTO
   }
 
   private enum StartPos {

@@ -154,17 +154,23 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
+  //to do: change to actual ports
   public static final int ELEVATOR__MOTOR_ID_MASTER = 0;
   public static final int ELEVATOR__MOTOR_ID_SLAVE = 1;
+  public static final int INTAKE_MOTOR = 2;
 
   //solenoid ports on PCM
   public static final int SOLENOID_forward1 = 0;
   public static final int SOLENOID_reverse1 = 1;
   public static final int SOLENOID_forward2 = 2;
   public static final int SOLENOID_reverse2 = 3;
-  public static final int SOLENOID_forward3 = 4;
-  public static final int SOLENOID_reverse3 = 5;
-  public static final int SOLENOID_forward4 = 6;
-  public static final int SOLENOID_reverse4 = 7;
 
+
+  public enum GamePiece {
+    CONE, CUBE
+  }
+
+  public enum ScoringLocation { 
+    LOW, MID, HIGH
+  }
 }
