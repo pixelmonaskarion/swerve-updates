@@ -4,6 +4,7 @@ import org.photonvision.PhotonUtils;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,8 +22,9 @@ public class VisionTranslateCommand extends CommandBase {
     private double ki = 10;
     private double kd = 0.05;
 
-;
+
     private PIDController forwardController;
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants., kd)
 
     public VisionTranslateCommand(VisionSubsystem vision, DriveSubsystem drive, XboxController controller) {
         this.vision = vision;

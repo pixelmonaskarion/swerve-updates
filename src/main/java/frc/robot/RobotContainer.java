@@ -38,6 +38,7 @@ public class RobotContainer {
     
     //SmartDashboard.putBoolean("BButton pressed", getController().getBButton());
 
+
     m_robotDrive = new DriveSubsystem();
     //m_vision = new VisionSubsystem();
     m_vision = new VisionSubsystem();
@@ -55,6 +56,7 @@ public class RobotContainer {
                 MathUtil.applyDeadband(-m_driverController.getRightY(), 0.06),
                 m_driverController.getRightBumper(), m_driverController.getAButton()),
             m_robotDrive));
+
   }
 
 
@@ -71,6 +73,11 @@ public class RobotContainer {
 
   }
 
+
+  public XboxController getController() {
+    return m_driverController;
+  }
+
   public DriveSubsystem getDrive() {
     return m_robotDrive;
   }
@@ -79,10 +86,6 @@ public class RobotContainer {
     return m_vision;
   }
 
-
-  public XboxController getController() {
-    return m_driverController;
-  }
 
   public AutoUtils getAutoRoutine() {
     return autoUtils;

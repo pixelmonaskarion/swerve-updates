@@ -71,8 +71,6 @@ public class AutoUtils {
         .andThen(new VisionTurnCommand(container.getVision(), container.getDrive(), container.getController()));
     }
 
-
-
     public Trajectory simpleCurve() {
       Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
           new Pose2d(0, 0, new Rotation2d(0)),
