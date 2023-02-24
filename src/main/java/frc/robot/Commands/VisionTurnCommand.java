@@ -37,11 +37,9 @@ public class VisionTurnCommand extends CommandBase {
                 rotationSpeed = 0;
             }
       
-        drive.drive(MathUtil.applyDeadband(-controller.getLeftY(), 0.06),
+        drive.mainDrive(MathUtil.applyDeadband(-controller.getLeftY(), 0.06),
         MathUtil.applyDeadband(-controller.getLeftX(), 0.06),
-        MathUtil.applyDeadband(rotationSpeed, 0.06),
-        MathUtil.applyDeadband(-controller.getRightY(), 0.06),
-        controller.getRightBumper(), controller.getAButton());
+        MathUtil.applyDeadband(rotationSpeed, 0.06));
     }
 
     @Override

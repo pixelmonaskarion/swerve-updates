@@ -162,9 +162,13 @@ public final class Constants {
   public static final int ELEVATOR__MOTOR_ID_SLAVE = 1;
 
   //solenoid ports on PCM
-  public static final int SOLENOID_P1 = 0;
-  public static final int SOLENOID_P2 = 1;
-  public static final int SOLENOID_P3 = 2;
-  public static final int SOLENOID_P4 = 3;
+  public static final int SOLENOID_forward1 = 0;
+  public static final int SOLENOID_reverse1 = 1;
+  public static final int SOLENOID_forward2 = 2;
+  public static final int SOLENOID_reverse2 = 3;
+  public static final int SOLENOID_forward3 = 4;
+  public static final int SOLENOID_reverse3 = 5;
+  public static final int SOLENOID_forward4 = 6;
+  public static final int SOLENOID_reverse4 = 7;
 
 }

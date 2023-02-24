@@ -1,5 +1,7 @@
 package frc.robot.Subsystems;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
@@ -24,6 +26,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private RelativeEncoder m_encoder1;
     private RelativeEncoder m_encoder2;
     public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+
+    private List<CANSparkMax> motorList = new ArrayList<>();
   
     public ElevatorSubsystem() {
       elevatorMotor1 = new CANSparkMax(Constants.ELEVATOR__MOTOR_ID_MASTER, MotorType.kBrushless);
@@ -33,8 +37,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       elevatorMotor1.setIdleMode(IdleMode.kBrake);
       elevatorMotor1.restoreFactoryDefaults();
+      motorList.add(elevatorMotor1);
       elevatorMotor2.setIdleMode(IdleMode.kBrake);
       elevatorMotor2.restoreFactoryDefaults();
+      motorList.add(elevatorMotor2);
+
       m_pidController1 = elevatorMotor1.getPIDController();
       m_pidController2 = elevatorMotor2.getPIDController();
 
@@ -102,10 +109,13 @@ public class ElevatorSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("SetPoint", rotations);
       SmartDashboard.putNumber("ProcessVariable1", m_encoder1.getPosition());
       SmartDashboard.putNumber("ProcessVariable2", m_encoder2.getPosition());
+
     }
+
+    
   
-    public CANSparkMax[] getElevatorMotors() {
-      return new CANSparkMax[]{elevatorMotor1, elevatorMotor2};
+    public List<CANSparkMax> getElevatorMotors() {
+      return motorList;
     }
   
 }
