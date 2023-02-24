@@ -4,7 +4,6 @@ import org.photonvision.PhotonUtils;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,7 +23,6 @@ public class VisionTranslateCommand extends CommandBase {
 
 
     private PIDController forwardController;
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants., kd)
 
     public VisionTranslateCommand(VisionSubsystem vision, DriveSubsystem drive, XboxController controller) {
         this.vision = vision;
@@ -53,7 +51,6 @@ public class VisionTranslateCommand extends CommandBase {
             Constants.CAMERA_PITCH_RADIANS,
             Units.degreesToRadians(vision.getBestTarget().getPitch()));
            
-            //forwardSpeed = 0.5*range;
             forwardSpeed = forwardController.calculate(range, Constants.GOAL_RANGE);
         } else {
             forwardSpeed = 0;

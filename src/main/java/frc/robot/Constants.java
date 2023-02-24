@@ -124,10 +124,6 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
-    public static final int AButton = 1;
-    public static final int BButton = 2;
-    public static final int YButton = 3;
-    public static final int ZButton = 4;
   }
 
   public static final class AutoConstants {
@@ -149,8 +145,8 @@ public final class Constants {
   }
 
   //to do: change to accurate value
-  public static final double CAMERA_HEIGHT = 2;
-  public static final double TARGET_HEIGHT = 1;
+  public static final double CAMERA_HEIGHT = 0.15;
+  public static final double TARGET_HEIGHT = 0.48;
   public static final double CAMERA_PITCH_RADIANS = 0;
   public static final double GOAL_RANGE = 1;
 
