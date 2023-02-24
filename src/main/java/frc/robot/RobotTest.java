@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
@@ -14,10 +17,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+public class RobotTest extends TimedRobot {
 
-  private RobotContainer m_robotContainer;
+  private XboxController controller = new XboxController(0);
+  private DoubleSolenoid sol;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -25,18 +28,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+
+    sol = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+    sol.set(Value.kReverse);
+    
   }
 
-  /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating .
-   */
+
+
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
@@ -44,6 +43,14 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    
+    if (controller.getAButton()) {
+        sol.set(Value.kForward);
+    } else if (controller.getBButton()) {
+        sol.set(Value.kReverse);
+    } else if(controller.getYButton()) {
+        sol.set(Value.kOff);
+    }
     
   }
 
@@ -57,11 +64,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_robotContainer.getDrive().zeroHeading();
-    Command currentAuto = m_robotContainer.getAutoUtils().chooseAuto(m_robotContainer, m_robotContainer.getAutoUtils().chooseStartPos());
-    if (currentAuto != null) {
-      currentAuto.schedule();
-    }
+
   }
 
   /** This function is called periodically during autonomous. */
@@ -71,12 +74,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+
   }
 
   /** This function is called periodically during operator control. */

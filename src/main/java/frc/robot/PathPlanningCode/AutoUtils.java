@@ -78,7 +78,7 @@ public class AutoUtils {
 
 
     public Command simpleCmdGrp(RobotContainer container) {
-        return new RunCommand(() -> container.getDrive().mainDrive(0.8, 0, 0), container.getDrive()).withTimeout(5);
+        return new RunCommand(() -> container.getDrive().mainDrive(0.8, 0, 0), container.getDrive()).withTimeout(2);
     }
 
 
@@ -113,10 +113,10 @@ public class AutoUtils {
     public Command priorityOneAuto(RobotContainer container, StartPos startPos) {
       return simpleTrajectoryCommand(container, initDriveToScore())
         //.andThen(new ScoreGamePieceCommand())
-        .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
+      .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
     }
 
-    //to do: write charge station balance command
+    //to do: write charge station balance command, is rotation180 breaking it?
     public Command priorityTwoAuto(RobotContainer container, StartPos startPos) {
       return simpleTrajectoryCommand(container, initDriveToScore())
         .andThen(simpleTrajectoryCommand(container, rotate180().concatenate(getOnChargeStation(startPos))));
@@ -160,13 +160,22 @@ public class AutoUtils {
     }
 
     private Trajectory rotate180() {
+      try{
       return TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0,0, new Rotation2d(180))), config);
+      } catch (ArrayIndexOutOfBoundsException e) {
+        e.printStackTrace();
+      }
+      return null;
     }
     
     //drive 1 m forward
     private Trajectory initDriveToScore() {
-      Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-        List.of(new Pose2d(1, 0, new Rotation2d(0))), config);
+        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+          new Pose2d(0, 0, new Rotation2d(0)),
+          List.of(new Translation2d(0.5, 0)),
+          new Pose2d(0.5, 0, new Rotation2d(0)),
+          config);
+  
       return trajectory;
     }
 
@@ -174,13 +183,16 @@ public class AutoUtils {
     private Trajectory driveOutOfCommunity(StartPos pos) {
       Trajectory trajectory;
       if (pos == StartPos.LEFT_CS || pos == StartPos.RIGHT_CS) {
-        trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(-5, 0, new Rotation2d(0))), config);
+        trajectory = TrajectoryGenerator.generateTrajectory(
+          new Pose2d(0,0,new Rotation2d(0)), 
+          List.of(new Translation2d(-5, 0.1)),
+          new Pose2d(-5.1, 0.2, new Rotation2d(0)), config);
         return trajectory;
       } else if (pos == StartPos.MID_CS) {
         trajectory = TrajectoryGenerator.generateTrajectory(
-          new Pose2d(-0.5, 0, new Rotation2d(180)), 
-          List.of(new Translation2d(3.9, -4)), 
-          new Pose2d(2, 0, new Rotation2d(0)), config);
+          new Pose2d(0, 0, new Rotation2d(0)), 
+          List.of(new Translation2d(-3.9, -4)), 
+          new Pose2d(-4, -4, new Rotation2d(0)), config);
         return trajectory;
       }
       return null;

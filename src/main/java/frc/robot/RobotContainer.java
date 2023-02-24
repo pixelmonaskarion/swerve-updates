@@ -87,7 +87,7 @@ public class RobotContainer {
   }
 
 
-  public AutoUtils getAutoRoutine() {
+  public AutoUtils getAutoUtils() {
     return autoUtils;
   }
 }
