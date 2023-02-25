@@ -7,7 +7,10 @@ import frc.robot.Commands.VisionTurnCommand;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Commands.VisionTranslateCommand;
 import frc.robot.PathPlanningCode.AutoUtils;
+import frc.robot.Subsystems.ArmSubsystem;
 import frc.robot.Subsystems.DriveSubsystem;
+import frc.robot.Subsystems.ElevatorSubsystem;
+import frc.robot.Subsystems.IntakeSubsystem;
 import frc.robot.Subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -20,10 +23,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems
+
   private final DriveSubsystem m_robotDrive;
-  //private final VisionSubsystem m_vision;
   private final VisionSubsystem m_vision;
+  private final ElevatorSubsystem m_elevator;
+  private final ArmSubsystem m_arm;
+  private final IntakeSubsystem m_intake;
 
 
   private final AutoUtils autoUtils = new AutoUtils();
@@ -37,8 +42,10 @@ public class RobotContainer {
   public RobotContainer() {
 
     m_robotDrive = new DriveSubsystem();
-    //m_vision = new VisionSubsystem();
     m_vision = new VisionSubsystem();
+    m_elevator = new ElevatorSubsystem();
+    m_arm = new ArmSubsystem();
+    m_intake = new IntakeSubsystem();
 
     configureButtonBindings();
     // Configure default commands
@@ -79,6 +86,18 @@ public class RobotContainer {
 
   public VisionSubsystem getVision() {
     return m_vision;
+  }
+
+  public ElevatorSubsystem getElevator() {
+    return m_elevator;
+  }
+
+  public ArmSubsystem getArm() {
+    return m_arm;
+  }
+
+  public IntakeSubsystem getIntake() {
+    return m_intake;
   }
 
   public AutoUtils getAutoUtils() {

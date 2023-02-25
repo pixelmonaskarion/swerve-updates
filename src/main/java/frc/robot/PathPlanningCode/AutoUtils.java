@@ -16,11 +16,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Commands.ChargeStationBalanceCommand;
+import frc.robot.Commands.IntakeGamePieceCommand;
+import frc.robot.Commands.ScoreGamePieceCommand;
 import frc.robot.Commands.VisionTranslateCommand;
 import frc.robot.Commands.VisionTurnCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ScoringLocation;
 
  //trajectory -- command:
     /*
@@ -52,6 +57,7 @@ import frc.robot.Constants.DriveConstants;
 public class AutoUtils {
     private SendableChooser<AutoModes> autoChooser = new SendableChooser<>();
     private SendableChooser<StartPos> startPosChooser = new SendableChooser<>();
+    private SendableChooser<ScoringLocation> scoreLocationChooser = new SendableChooser<>();
 
     private final TrajectoryConfig config = new TrajectoryConfig(
       AutoConstants.kMaxSpeedMetersPerSecond,
@@ -72,8 +78,13 @@ public class AutoUtils {
       startPosChooser.addOption("Middle of charge station", StartPos.MID_CS);
       startPosChooser.addOption("Right of charge station", StartPos.RIGHT_CS);
 
+      scoreLocationChooser.setDefaultOption("Low", ScoringLocation.LOW);
+      scoreLocationChooser.addOption("Middle", ScoringLocation.MID);
+      scoreLocationChooser.addOption("high", ScoringLocation.HIGH);
+
       SmartDashboard.putData("auto choices", autoChooser);
       SmartDashboard.putData("start position choices", startPosChooser);
+      SmartDashboard.putData("initial score location", scoreLocationChooser);
     }
 
 
@@ -111,32 +122,34 @@ public class AutoUtils {
     }
 
     //to do: write score command (if for low level, no additional code is needed)
-    public Command priorityOneAuto(RobotContainer container, StartPos startPos) {
+    public Command priorityOneAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
       return simpleTrajectoryCommand(container, initDriveToScore())
-        //.andThen(new ScoreGamePieceCommand())
-      .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
+        .andThen(new ScoreGamePieceCommand(container.getArm(), container.getElevator(), container.getIntake(), location))
+        .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
     }
 
     //just do a backup to score and then drive forward if 180 turn still offsets gyro weirdly
     public Command priorityTwoAuto(RobotContainer container, StartPos startPos) {
       return simpleTrajectoryCommand(container, initDriveToScore())
       .andThen(rotate180(container))
-        .alongWith(simpleTrajectoryCommand(container, getOnChargeStation(startPos)));
-            //.alongWith(new ChargeStationBalanceCommand()));
+        .alongWith(simpleTrajectoryCommand(container, getOnChargeStation(startPos)))
+          .alongWith(new ChargeStationBalanceCommand(container.getDrive(), container.getElevator()));
     }
 
-    public Command priorityThreeAuto(RobotContainer container, StartPos startPos) {
+    public Command priorityThreeAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
       return simpleTrajectoryCommand(container, initDriveToScore())
-        //.andThen(simpleTrajectoryCommand(container, rotate180().concatenate(driveToStagedGamePiece(startPos))))
-        //andThen(new IntakeGamePieceCommand())
-        //.andThen(simpleTrajectoryCommand(container, rotate180()))
-        .andThen(new VisionTranslateCommand(container.getVision(), container.getDrive(), container.getController()));
-        //andThen(ScoreGamePieceCommand())
+        .andThen(rotate180(container))
+        .andThen(simpleTrajectoryCommand(container, driveToStagedGamePiece(startPos)))
+        .andThen(new IntakeGamePieceCommand(container.getElevator(), container.getArm(), container.getIntake()))
+        .andThen(rotate180(container))
+          .deadlineWith(new VisionTranslateCommand(container.getVision(), container.getDrive(), container.getController()))
+        .andThen(new ScoreGamePieceCommand(container.getArm(), container.getElevator(), container.getIntake(), location));
     }
 
-    public Command priorityFourAuto(RobotContainer container, StartPos startPos) {
-      return priorityThreeAuto(container, startPos);
-       // .andThen(simpleTrajectoryCommand(container, rotate180().concatenate(getOnChargeStation(startPos))));
+    public Command priorityFourAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
+      return priorityThreeAuto(container, startPos, location)
+        .andThen(rotate180(container))
+        .andThen(simpleTrajectoryCommand(container, getOnChargeStation(startPos)));
     }
 
     //test
@@ -252,20 +265,20 @@ public class AutoUtils {
 
 
   //start position chooser is fed into this for start position-dependent trajectories
-  public Command chooseAuto(RobotContainer container, StartPos startPos) {
+  public Command chooseAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
     switch(autoChooser.getSelected()) {
       case SIMPLE_TRAJECTORY:
         return simpleTrajectoryCommand(container, simpleCurve());
       case AUTO_ALIGN_TRAJECTORY:
         return trajectoryAutoAlign(container, driveToScore());
       case PRIORITY_1_AUTO:
-        return priorityOneAuto(container, startPos);
+        return priorityOneAuto(container, startPos, location);
       case PRIORITY_2_AUTO:
         return priorityTwoAuto(container, startPos);
       case PRIORITY_3_AUTO:
-        return priorityThreeAuto(container, startPos);
+        return priorityThreeAuto(container, startPos, location);
       case PRIORITY_4_AUTO:
-        return priorityFourAuto(container, startPos);
+        return priorityFourAuto(container, startPos, location);
       default:
         return simpleCmdGrp(container);
     }
@@ -279,6 +292,17 @@ public class AutoUtils {
         return StartPos.MID_CS;
       default:
         return StartPos.RIGHT_CS;
+    }
+  }
+
+  public ScoringLocation chooseInitScoreLocation() {
+    switch(scoreLocationChooser.getSelected()) {
+      case MID:
+        return ScoringLocation.MID;
+      case HIGH:
+        return ScoringLocation.HIGH;
+      default:
+        return ScoringLocation.LOW;
     }
   }
 
