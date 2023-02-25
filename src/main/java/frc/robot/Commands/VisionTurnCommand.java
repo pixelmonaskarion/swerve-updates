@@ -9,17 +9,23 @@ import frc.robot.Subsystems.DriveSubsystem;
 import frc.robot.Subsystems.VisionSubsystem;
 
 public class VisionTurnCommand extends CommandBase {
+   // private VisionSubsystem vision;
     private VisionSubsystem vision;
     private DriveSubsystem drive;
     private XboxController controller;
-    private PIDController turnController = new PIDController(0.1, 0.2, 0.02);
+
+    private PIDController turnController;
 
     public VisionTurnCommand(VisionSubsystem vision, DriveSubsystem drive, XboxController controller) {
         this.vision = vision;
         this.drive = drive;
         this.controller = controller;
 
+
         addRequirements(vision, drive);
+
+        turnController = new PIDController(0.1, 0.2, 0.1);
+
         //set a limit on overshoot compensation
         turnController.setIntegratorRange(0, Math.toRadians(8));
     }
@@ -30,25 +36,17 @@ public class VisionTurnCommand extends CommandBase {
     public void execute() {
         double rotationSpeed = -controller.getRightX();
 
-        var result = vision.getCam().getLatestResult();
-            if (result.hasTargets()) {
-                rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
+            if (vision.getHasTarget()) {
+                rotationSpeed = turnController.calculate(vision.getBestTarget().getYaw(), 0);
             } else {
                 rotationSpeed = 0;
             }
       
-        drive.mainDrive(MathUtil.applyDeadband(-controller.getLeftY(), 0.06),
-        MathUtil.applyDeadband(-controller.getLeftX(), 0.06),
+        drive.mainDrive(-MathUtil.applyDeadband(controller.getLeftY(), 0.06),
+        MathUtil.applyDeadband(controller.getLeftX(), 0.06),
         MathUtil.applyDeadband(rotationSpeed, 0.06));
     }
 
-    @Override
-    public boolean isFinished() {
-        if (turnController.getPositionError() < Math.toRadians(5)) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void end(boolean interrupted) {

@@ -124,10 +124,6 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
-    public static final int AButton = 1;
-    public static final int BButton = 2;
-    public static final int YButton = 3;
-    public static final int ZButton = 4;
   }
 
   public static final class AutoConstants {
@@ -149,26 +145,32 @@ public final class Constants {
   }
 
   //to do: change to accurate value
-  public static final double CAMERA_HEIGHT = 2;
-  public static final double TARGET_HEIGHT = 1;
+  public static final double CAMERA_HEIGHT = 0.15;
+  public static final double TARGET_HEIGHT = 0.48;
   public static final double CAMERA_PITCH_RADIANS = 0;
-  public static final double GOAL_RANGE = 1.5;
+  public static final double GOAL_RANGE = 1;
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
+  //to do: change to actual ports
   public static final int ELEVATOR__MOTOR_ID_MASTER = 0;
   public static final int ELEVATOR__MOTOR_ID_SLAVE = 1;
+  public static final int INTAKE_MOTOR = 2;
 
   //solenoid ports on PCM
   public static final int SOLENOID_forward1 = 0;
   public static final int SOLENOID_reverse1 = 1;
   public static final int SOLENOID_forward2 = 2;
   public static final int SOLENOID_reverse2 = 3;
-  public static final int SOLENOID_forward3 = 4;
-  public static final int SOLENOID_reverse3 = 5;
-  public static final int SOLENOID_forward4 = 6;
-  public static final int SOLENOID_reverse4 = 7;
 
+
+  public enum GamePiece {
+    CONE, CUBE
+  }
+
+  public enum ScoringLocation { 
+    LOW, MID, HIGH
+  }
 }

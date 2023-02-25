@@ -34,36 +34,37 @@ public class GenericPID {
         c.kI = 0.0001;
         c.kD = 0.06;
         GenericPID p = new GenericPID(c);
-        Motor m = new Motor(0, 2, 0.1, 0, 2, 0, 0, 0);
-        double dt = 0.001;
-        double target = 2;
-        // Graph g = new Graph(new Graph.GraphConfig.Builder.y2(100).build());
-        Graph.GraphConfig gc = new Graph.GraphConfig();
-        gc.x1 = 0;
-        gc.x2 = 20;
-        gc.y2 = 3;
-        gc.y1 = -3;
-        Graph g = new Graph(gc);
-        g.addPlot(Color.BLUE);
-        class f implements DoubleFunction {
-            public double eval(double x) {
-                //first the control effect is updated (including with the derivative of currrent to last),
-                //then the motor is directed towards this velocity, and the motor updates its position and known time.
-                //then the pid updates its known time, should be in sync with the motor's known time
-                //see graph atop this class
-                if (x == 0) {
-                    m.sustain(p.firstEffect(target, m.p()), dt);
+        try (Motor m = new Motor(0, 2, 0.1, 0, 2, 0, 0, 0)) {
+            double dt = 0.001;
+            double target = 2;
+            // Graph g = new Graph(new Graph.GraphConfig.Builder.y2(100).build());
+            Graph.GraphConfig gc = new Graph.GraphConfig();
+            gc.x1 = 0;
+            gc.x2 = 20;
+            gc.y2 = 3;
+            gc.y1 = -3;
+            Graph g = new Graph(gc);
+            g.addPlot(Color.BLUE);
+            class f implements DoubleFunction {
+                public double eval(double x) {
+                    //first the control effect is updated (including with the derivative of currrent to last),
+                    //then the motor is directed towards this velocity, and the motor updates its position and known time.
+                    //then the pid updates its known time, should be in sync with the motor's known time
+                    //see graph atop this class
+                    if (x == 0) {
+                        m.sustain(p.firstEffect(target, m.p()), dt);
+                        p.next_t(dt);
+                    }
+                    m.sustain(p.controlEffect(target, m.p(), dt), dt); 
                     p.next_t(dt);
+                    assert p.synced_exact(m.t());
+                    if(debug)System.out.printf("t:%f p:%f x:%f\n", m.t(), m.p(), x);
+                    return m.p();
                 }
-                m.sustain(p.controlEffect(target, m.p(), dt), dt); 
-                p.next_t(dt);
-                assert p.synced_exact(m.t());
-                if(debug)System.out.printf("t:%f p:%f x:%f\n", m.t(), m.p(), x);
-                return m.p();
             }
+            g.plot(0, 20, new f(), dt, 0);
+            g.init(1000,1000,"PID Test");
         }
-        g.plot(0, 20, new f(), dt, 0);
-        g.init(1000,1000,"PID Test");
     }
     public static void main(String[] args) {
         test();

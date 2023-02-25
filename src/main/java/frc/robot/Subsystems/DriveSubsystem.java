@@ -12,7 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
@@ -44,8 +43,10 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  public Gyro m_gyro = new WPI_Pigeon2(Constants.DriveConstants.gyroID);
+  public WPI_Pigeon2 m_gyro = new WPI_Pigeon2(Constants.DriveConstants.gyroID);
   private final PowerDistribution powerDistribution = new PowerDistribution();
+
+  
 
   private double prevAngle = 0;
   private double rightAngGoal = 0;
@@ -61,11 +62,12 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
       });
+      
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-
     powerDistribution.clearStickyFaults();
+    
   }
 
   @Override
@@ -80,7 +82,9 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
       
+       
     double ang = m_gyro.getRotation2d().getDegrees();
+  
 
     SmartDashboard.putNumber("delta heading", ang - prevAngle);
 
@@ -220,6 +224,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getHeading() {
     return Rotation2d.fromDegrees(-m_gyro.getAngle()).getDegrees();
+  }
+
+  public double getPitch() {
+    return m_gyro.getPitch();
   }
 
   /**
