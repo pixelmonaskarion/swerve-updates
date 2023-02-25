@@ -99,6 +99,7 @@ public class AutoUtils {
           container.getDrive()::setModuleStates,
           container.getDrive());
 
+      container.getDrive().zeroHeading();
       container.getDrive().resetOdometry(trajectory.getInitialPose());
 
       return swerveControllerCommand.andThen(() -> container.getDrive().mainDrive(0, 0, 0));
@@ -116,25 +117,26 @@ public class AutoUtils {
       .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
     }
 
-    //to do: write charge station balance command, is rotation180 breaking it?
+    //just do a backup to score and then drive forward if 180 turn still offsets gyro weirdly
     public Command priorityTwoAuto(RobotContainer container, StartPos startPos) {
       return simpleTrajectoryCommand(container, initDriveToScore())
-        .andThen(simpleTrajectoryCommand(container, rotate180().concatenate(getOnChargeStation(startPos))));
+      .andThen(rotate180(container))
+        .alongWith(simpleTrajectoryCommand(container, getOnChargeStation(startPos)));
             //.alongWith(new ChargeStationBalanceCommand()));
     }
 
     public Command priorityThreeAuto(RobotContainer container, StartPos startPos) {
       return simpleTrajectoryCommand(container, initDriveToScore())
-        .andThen(simpleTrajectoryCommand(container, rotate180().concatenate(driveToStagedGamePiece(startPos))))
+        //.andThen(simpleTrajectoryCommand(container, rotate180().concatenate(driveToStagedGamePiece(startPos))))
         //andThen(new IntakeGamePieceCommand())
-        .andThen(simpleTrajectoryCommand(container, rotate180()))
+        //.andThen(simpleTrajectoryCommand(container, rotate180()))
         .andThen(new VisionTranslateCommand(container.getVision(), container.getDrive(), container.getController()));
         //andThen(ScoreGamePieceCommand())
     }
 
     public Command priorityFourAuto(RobotContainer container, StartPos startPos) {
-      return priorityThreeAuto(container, startPos)
-        .andThen(simpleTrajectoryCommand(container, rotate180().concatenate(getOnChargeStation(startPos))));
+      return priorityThreeAuto(container, startPos);
+       // .andThen(simpleTrajectoryCommand(container, rotate180().concatenate(getOnChargeStation(startPos))));
     }
 
     //test
@@ -159,58 +161,63 @@ public class AutoUtils {
       return trajectory;
     }
 
-    private Trajectory rotate180() {
-      try{
-      return TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0,0, new Rotation2d(180))), config);
-      } catch (ArrayIndexOutOfBoundsException e) {
-        e.printStackTrace();
-      }
-      return null;
+
+    private Command rotate180(RobotContainer container) {
+      return new RunCommand(() -> container.getDrive().mainDrive(0, 0, 1), container.getDrive()).withTimeout(1.64);
     }
     
     //drive 1 m forward
     private Trajectory initDriveToScore() {
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-          new Pose2d(0, 0, new Rotation2d(0)),
-          List.of(new Translation2d(0.5, 0)),
-          new Pose2d(0.5, 0, new Rotation2d(0)),
-          config);
-  
+      Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+        new Pose2d(),
+        List.of(new Translation2d(1, 0)), new Pose2d(1, 0, new Rotation2d()), config);
       return trajectory;
     }
 
-    //back up 5 meters or drive around charge station
+    //back up or drive around charge station
     private Trajectory driveOutOfCommunity(StartPos pos) {
       Trajectory trajectory;
       if (pos == StartPos.LEFT_CS || pos == StartPos.RIGHT_CS) {
         trajectory = TrajectoryGenerator.generateTrajectory(
-          new Pose2d(0,0,new Rotation2d(0)), 
-          List.of(new Translation2d(-5, 0.1)),
-          new Pose2d(-5.1, 0.2, new Rotation2d(0)), config);
+          new Pose2d(),
+          List.of(new Translation2d(-5, 0)),
+          new Pose2d(-5.1, -0.1, new Rotation2d()),
+          config);
         return trajectory;
       } else if (pos == StartPos.MID_CS) {
         trajectory = TrajectoryGenerator.generateTrajectory(
-          new Pose2d(0, 0, new Rotation2d(0)), 
-          List.of(new Translation2d(-3.9, -4)), 
-          new Pose2d(-4, -4, new Rotation2d(0)), config);
+          new Pose2d(),
+          List.of(new Translation2d(-3.9, -4)),
+          new Pose2d(-4, -4, new Rotation2d(0)),
+          config);
         return trajectory;
       }
       return null;
     }
+
 
     private Trajectory getOnChargeStation(StartPos pos) {
       Trajectory trajectory;
         if (pos == StartPos.LEFT_CS) {
           trajectory = TrajectoryGenerator.generateTrajectory(
-            List.of(new Pose2d(1, 2, new Rotation2d(0)), new Pose2d(0, -0.3, new Rotation2d(0))),
+            new Pose2d(), 
+            List.of(new Translation2d(2, 2)), 
+            new Pose2d(3,2, new Rotation2d()),
             config);
           return trajectory;
         } else if (pos == StartPos.MID_CS) {
-          trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(2.9, 0, new Rotation2d(0))), config);
+          trajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0,0, new Rotation2d(0)), 
+            List.of(new Translation2d(-2, 0)),
+            new Pose2d(-3, 0.1, new Rotation2d(0)),
+            config);
           return trajectory;
         } else if (pos == StartPos.RIGHT_CS) {
           trajectory = TrajectoryGenerator.generateTrajectory(
-            List.of(new Pose2d(1, -2, new Rotation2d(0)), new Pose2d(0, 0.3, new Rotation2d(0))), config);
+            new Pose2d(),
+            List.of(new Translation2d(2, -2)),
+            new Pose2d(3, -2, new Rotation2d()),
+            config);
           return trajectory;
         }
         return null;
@@ -219,13 +226,25 @@ public class AutoUtils {
     private Trajectory driveToStagedGamePiece(StartPos pos) {
       Trajectory trajectory;
         if (pos == StartPos.LEFT_CS) {
-          trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(5.9, 0.2, new Rotation2d(0))), config);
+          trajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(),
+            List.of(new Translation2d(5.9, 0)),
+            new Pose2d(5.9, 0.4, new Rotation2d()),
+            config);
           return trajectory;
         } else if (pos == StartPos.MID_CS) {
-          trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(0, 1.8, new Rotation2d(0)), new Pose2d(5.9, 0, new Rotation2d(0))), config);
+          trajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(),
+            List.of(new Translation2d(0, 1.8)),
+            new Pose2d(5.9, 1.8, new Rotation2d()),
+            config);
           return trajectory;
         } else if (pos == StartPos.RIGHT_CS) {
-          trajectory = TrajectoryGenerator.generateTrajectory(List.of(new Pose2d(5.9, -0.4, new Rotation2d(0))), config);
+          trajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(),
+            List.of(new Translation2d(5.9, 0)),
+            new Pose2d(5.9, -0.4, new Rotation2d()),
+            config);
           return trajectory;
         }
         return null;

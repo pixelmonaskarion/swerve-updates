@@ -25,6 +25,7 @@ public class RobotContainer {
   //private final VisionSubsystem m_vision;
   private final VisionSubsystem m_vision;
 
+
   private final AutoUtils autoUtils = new AutoUtils();
 
   // The driver's controller
@@ -34,10 +35,6 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the button bindings
-    
-    //SmartDashboard.putBoolean("BButton pressed", getController().getBButton());
-
 
     m_robotDrive = new DriveSubsystem();
     //m_vision = new VisionSubsystem();
@@ -56,7 +53,6 @@ public class RobotContainer {
                 MathUtil.applyDeadband(-m_driverController.getRightY(), 0.06),
                 m_driverController.getRightBumper(), m_driverController.getAButton()),
             m_robotDrive));
-
   }
 
 
@@ -69,8 +65,6 @@ public class RobotContainer {
       new Trigger(() -> m_driverController.getYButton())
       .onTrue(new VisionTranslateCommand(m_vision, m_robotDrive, m_driverController));
 
-    
-
   }
 
 
@@ -82,10 +76,10 @@ public class RobotContainer {
     return m_robotDrive;
   }
  
+
   public VisionSubsystem getVision() {
     return m_vision;
   }
-
 
   public AutoUtils getAutoUtils() {
     return autoUtils;
