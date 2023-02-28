@@ -40,4 +40,9 @@ public class IntakeGamePieceCommand extends CommandBase {
     public boolean isFinished() {
         return timer.hasElapsed(3) ? true : false;
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        timer.stop();
+    }
 }

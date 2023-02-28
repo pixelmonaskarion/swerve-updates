@@ -2,6 +2,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Commands.VisionTurnCommand;
@@ -9,11 +10,13 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Commands.IntakeGamePieceCommand;
 import frc.robot.Commands.ScoreGamePieceCommand;
 import frc.robot.Commands.SimpleDriveCommand;
+import frc.robot.Commands.ToStartConfigCommand;
 import frc.robot.Commands.VisionTranslateCommand;
 import frc.robot.PathPlanningCode.AutoUtils;
 import frc.robot.Subsystems.ArmSubsystem;
 import frc.robot.Subsystems.DriveSubsystem;
 import frc.robot.Subsystems.ElevatorSubsystem;
+import frc.robot.Subsystems.ElevatorTrapezoidalSubsystem;
 import frc.robot.Subsystems.IntakeSubsystem;
 import frc.robot.Subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -31,6 +34,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive;
   private final VisionSubsystem m_vision;
   private final ElevatorSubsystem m_elevator;
+  //private final ElevatorTrapezoidalSubsystem m_elevatorTrapezoidal;
   private final ArmSubsystem m_arm;
   private final IntakeSubsystem m_intake;
 
@@ -50,6 +54,7 @@ public class RobotContainer {
     m_robotDrive = new DriveSubsystem();
     m_vision = new VisionSubsystem();
     m_elevator = new ElevatorSubsystem();
+    //m_elevatorTrapezoidal = new ElevatorTrapezoidalSubsystem(new TrapezoidProfile.Constraints(2.5, 2.5));
     m_arm = new ArmSubsystem();
     m_intake = new IntakeSubsystem();
 
@@ -103,6 +108,9 @@ public class RobotContainer {
 
     new Trigger(() -> m_operatorController.getRawButton(10))
       .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.HIGH, intakeSpeedMultiplier));
+
+    new Trigger(() -> m_operatorController.getRawButton(13))
+      .onTrue(new ToStartConfigCommand(m_arm, m_elevator));
       
   }
 
