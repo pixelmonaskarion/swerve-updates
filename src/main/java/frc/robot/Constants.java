@@ -124,6 +124,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kIOperatorControllerPort = 1;
   }
 
   public static final class AutoConstants {
@@ -144,7 +145,6 @@ public final class Constants {
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
 
-  //to do: change to accurate value
   public static final double CAMERA_HEIGHT = 0.15;
   public static final double TARGET_HEIGHT = 0.48;
   public static final double CAMERA_PITCH_RADIANS = 0;
@@ -155,15 +155,21 @@ public final class Constants {
   }
 
   //to do: change to actual ports
-  public static final int ELEVATOR__MOTOR_ID_MASTER = 0;
-  public static final int ELEVATOR__MOTOR_ID_SLAVE = 1;
-  public static final int INTAKE_MOTOR = 2;
+  public static final int ELEVATOR_MOTOR_ID_MASTER = 0;
+  public static final int ELEVATOR_MOTOR_ID_SLAVE = 1;
+  public static final int INTAKE_MOTOR_INNER = 2;
+  public static final int INTAKE_MOTOR_OUTER = 3;
+
+
+  public static final double ELEVATOR_kS = 0.2;
+  public static final double ELEVATOR_kA = 0.09;
+  public static final double ELEVATOR_kV = 6.14;
+  public static final double ELEVATOR_kG = 0.68;
+
 
   //solenoid ports on PCM
   public static final int SOLENOID_forward1 = 0;
   public static final int SOLENOID_reverse1 = 1;
-  public static final int SOLENOID_forward2 = 2;
-  public static final int SOLENOID_reverse2 = 3;
 
 
   public enum GamePiece {
@@ -171,6 +177,6 @@ public final class Constants {
   }
 
   public enum ScoringLocation { 
-    LOW, MID, HIGH
+    LOW, MID, MIDHIGH, HIGH
   }
 }

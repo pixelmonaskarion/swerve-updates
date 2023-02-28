@@ -31,7 +31,7 @@ public class Motor extends CANSparkMax {
     private final double mass; //SI, kg
     private final double kdrag; //SI, unitless
     private final double kkdrag; //SI, units?
-    private final double force; //SI, N //TODO: should make a max accel too, this is max force? idk, this makes sense as is kinda, unless constraints are needed for external parts
+    private final double force; //SI, should make a max accel too, this is max force? idk, this makes sense as is kinda, unless constraints are needed for external parts
     //or make it so this is max force and you can use less, control it yourself? irdk, tbf, this is just a simulation
     
     //the artificial motor is simulated with tangential physics, not rotational

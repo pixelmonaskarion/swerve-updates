@@ -14,29 +14,34 @@ public class ScoreGamePieceCommand extends CommandBase {
     private ElevatorSubsystem elevator;
     private IntakeSubsystem intake;
     private ScoringLocation location;
+    private double intakeSpeedMultiplier;
 
     private Timer timer;
     private double elevatorSetpoint = 0;
 
-    public ScoreGamePieceCommand(ArmSubsystem arm, ElevatorSubsystem elevator, IntakeSubsystem intake, ScoringLocation location) {
+    public ScoreGamePieceCommand(ArmSubsystem arm, ElevatorSubsystem elevator, IntakeSubsystem intake, ScoringLocation location, double intakeSpeedMultiplier) {
         this.arm = arm;
         this.elevator = elevator;
         this.intake = intake;
         this.location = location;
+        this.intakeSpeedMultiplier = intakeSpeedMultiplier;
 
         timer = new Timer();
 
-        addRequirements(arm, elevator);
+        addRequirements(arm, elevator, intake);
     }
 
     @Override
     public void initialize() {
+        timer.reset();
         timer.start();
 
         if (location == ScoringLocation.MID) {
+            elevatorSetpoint = 0.5;
+        } else if (location == ScoringLocation.MIDHIGH) {
             elevatorSetpoint = 1;
         } else if (location == ScoringLocation.HIGH) {
-            elevatorSetpoint = 2;
+            elevatorSetpoint = 1.5;
         }
     }
 
@@ -46,14 +51,14 @@ public class ScoreGamePieceCommand extends CommandBase {
         elevator.moveElevator(() -> elevatorSetpoint);
 
         if (timer.get() > 4) {
-            intake.release();
+            intake.releaseCargo(intakeSpeedMultiplier);
         }
     }
 
 
     @Override
     public boolean isFinished() {
-        if (timer.get() > 5) {
+        if (timer.get() > 6) {
             return true;
         }
         return false;

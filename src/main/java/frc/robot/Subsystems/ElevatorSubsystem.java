@@ -18,20 +18,20 @@ import frc.robot.Constants;
 
 //to do: error handling for if pid controllers get misaligned
 public class ElevatorSubsystem extends SubsystemBase {
-    private CANSparkMax elevatorMotor1;
-    private CANSparkMax elevatorMotor2;
+    private final CANSparkMax elevatorMotor1;
+    private final CANSparkMax elevatorMotor2;
    
-    private SparkMaxPIDController m_pidController1;
-    private SparkMaxPIDController m_pidController2;
-    private RelativeEncoder m_encoder1;
-    private RelativeEncoder m_encoder2;
-    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+    private final SparkMaxPIDController m_pidController1;
+    private final SparkMaxPIDController m_pidController2;
+    private final RelativeEncoder m_encoder1;
+    private final RelativeEncoder m_encoder2;
+    public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
     private List<CANSparkMax> motorList = new ArrayList<>();
   
     public ElevatorSubsystem() {
-      elevatorMotor1 = new CANSparkMax(Constants.ELEVATOR__MOTOR_ID_MASTER, MotorType.kBrushless);
-      elevatorMotor2 = new CANSparkMax(Constants.ELEVATOR__MOTOR_ID_SLAVE, MotorType.kBrushless);
+      elevatorMotor1 = new CANSparkMax(Constants.ELEVATOR_MOTOR_ID_MASTER, MotorType.kBrushless);
+      elevatorMotor2 = new CANSparkMax(Constants.ELEVATOR_MOTOR_ID_SLAVE, MotorType.kBrushless);
       m_encoder1 = elevatorMotor1.getEncoder();
       m_encoder2 = elevatorMotor2.getEncoder();
 
@@ -79,7 +79,6 @@ public class ElevatorSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Set Rotations", 0);
     }
   
-  
    
     public void moveElevator(DoubleSupplier joystickPos) {
       // read PID coefficients from SmartDashboard
@@ -109,7 +108,17 @@ public class ElevatorSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("SetPoint", rotations);
       SmartDashboard.putNumber("ProcessVariable1", m_encoder1.getPosition());
       SmartDashboard.putNumber("ProcessVariable2", m_encoder2.getPosition());
+    }
 
+  
+    public void movementTest(boolean extend, boolean retract) {
+      if (extend) {
+        elevatorMotor1.set(0.5);
+        elevatorMotor2.set(0.5);
+      } else if (retract) {
+        elevatorMotor1.set(-0.5);
+        elevatorMotor2.set(-0.5);
+      }
     }
 
     

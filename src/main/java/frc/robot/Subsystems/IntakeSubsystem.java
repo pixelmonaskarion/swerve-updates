@@ -8,25 +8,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private CANSparkMax intakeMotor;
+    private CANSparkMax intakeMotorInner;
+    private CANSparkMax intakeMotorOuter;
 
     public IntakeSubsystem() {
-        intakeMotor = new CANSparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
+        intakeMotorInner = new CANSparkMax(Constants.INTAKE_MOTOR_INNER, MotorType.kBrushless);
+        intakeMotorOuter = new CANSparkMax(Constants.INTAKE_MOTOR_OUTER, MotorType.kBrushless);
 
-        intakeMotor.setIdleMode(IdleMode.kBrake);
-        intakeMotor.restoreFactoryDefaults();
-        intakeMotor.enableVoltageCompensation(12);
+        intakeMotorInner.setIdleMode(IdleMode.kBrake);
+        intakeMotorInner.restoreFactoryDefaults();
+        intakeMotorOuter.setIdleMode(IdleMode.kBrake);
+        intakeMotorOuter.restoreFactoryDefaults();
+
     }
 
-    public void pickUp() {
-        intakeMotor.set(0.8);
+    public void pickUpCargo(double speedMultiplier) {
+        intakeMotorInner.set(-speedMultiplier);
+        intakeMotorOuter.set(speedMultiplier);
     }
 
-    public void release() {
-        intakeMotor.set(-0.8);
-    }
-
-    public void stop() {
-        intakeMotor.set(0);
+    public void releaseCargo(double speedMultiplier) {
+        intakeMotorInner.set(speedMultiplier);
+        intakeMotorOuter.set(-speedMultiplier);
     }
 }

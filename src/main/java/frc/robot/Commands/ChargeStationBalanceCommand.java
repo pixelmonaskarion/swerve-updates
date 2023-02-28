@@ -14,7 +14,7 @@ public class ChargeStationBalanceCommand extends CommandBase {
     private Timer timer;
 
     private static final double ERROR = 2;
-    private static final double TIME_ENGAGED = 1;
+    private static final double TIME_ENGAGED = 1.5;
     private static final double ELEVATOR_SETPOINT = 2;
     
     public ChargeStationBalanceCommand(DriveSubsystem drive, ElevatorSubsystem elevator) {
@@ -42,20 +42,19 @@ public class ChargeStationBalanceCommand extends CommandBase {
         double error = ERROR - pitch;
 
         //drive and put data on smart dashboard
-        drive.mainDrive(-0.1*pitch, 0, 0);
+        drive.mainDrive(-0.1*pitch, 0, drive.getHeading());
         SmartDashboard.putNumber("ChargeStationBalance/CurrentAngle", pitch);
         SmartDashboard.putNumber("ChargeStationBalance/AngularEffort", error);
 
         //reset timer if robot is not balanced
-        if (Math.abs(error) >= ERROR) {
+        if (error > ERROR) {
             timer.reset(); 
         }
     }
 
     @Override
     public boolean isFinished() {
-        return (timer.hasElapsed(TIME_ENGAGED)) ? true : false;
-        
+        return (timer.get() >= TIME_ENGAGED) ? true : false;
     }
 
     @Override

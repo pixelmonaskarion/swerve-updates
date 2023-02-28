@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Commands.ChargeStationBalanceCommand;
 import frc.robot.Commands.IntakeGamePieceCommand;
@@ -124,7 +123,7 @@ public class AutoUtils {
     //to do: write score command (if for low level, no additional code is needed)
     public Command priorityOneAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
       return simpleTrajectoryCommand(container, initDriveToScore())
-        .andThen(new ScoreGamePieceCommand(container.getArm(), container.getElevator(), container.getIntake(), location))
+        .andThen(new ScoreGamePieceCommand(container.getArm(), container.getElevator(), container.getIntake(), location, 1.0))
         .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
     }
 
@@ -140,10 +139,10 @@ public class AutoUtils {
       return simpleTrajectoryCommand(container, initDriveToScore())
         .andThen(rotate180(container))
         .andThen(simpleTrajectoryCommand(container, driveToStagedGamePiece(startPos)))
-        .andThen(new IntakeGamePieceCommand(container.getElevator(), container.getArm(), container.getIntake()))
+        .andThen(new IntakeGamePieceCommand(container.getArm(), container.getIntake(), 1.0))
         .andThen(rotate180(container))
           .deadlineWith(new VisionTranslateCommand(container.getVision(), container.getDrive(), container.getController()))
-        .andThen(new ScoreGamePieceCommand(container.getArm(), container.getElevator(), container.getIntake(), location));
+        .andThen(new ScoreGamePieceCommand(container.getArm(), container.getElevator(), container.getIntake(), location, 1.0));
     }
 
     public Command priorityFourAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {

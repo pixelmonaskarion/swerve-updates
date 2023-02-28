@@ -24,8 +24,8 @@ public class ElevatorPIDCommand extends CommandBase {
         pidConfig.kI = 0.0001;
         pidConfig.kD = 0.06;
         
-        motor1 = elevator.getElevatorMotors().get(Constants.ELEVATOR__MOTOR_ID_MASTER);
-        motor2 = elevator.getElevatorMotors().get(Constants.ELEVATOR__MOTOR_ID_SLAVE);
+        motor1 = elevator.getElevatorMotors().get(Constants.ELEVATOR_MOTOR_ID_MASTER);
+        motor2 = elevator.getElevatorMotors().get(Constants.ELEVATOR_MOTOR_ID_SLAVE);
         
         addRequirements(elevator);
     }
