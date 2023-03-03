@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.GamePiece;
@@ -31,22 +32,23 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void pickUpCone(double speedMultiplier) {
-        intakeMotorInner.set(speedMultiplier);
+        intakeMotorInner.set(-speedMultiplier);
         intakeMotorOuter.set(-speedMultiplier);
     }
 
     public void releaseCone(double speedMultiplier) {
-        intakeMotorInner.set(-speedMultiplier);
+        intakeMotorInner.set(speedMultiplier);
         intakeMotorOuter.set(speedMultiplier);
     }
 
     public void pickUpCube(double speedMultiplier) {
         intakeMotorInner.set(speedMultiplier);
-        intakeMotorOuter.set(speedMultiplier);
+        intakeMotorOuter.set(-speedMultiplier);
     }
 
     public void releaseCube(double speedMultiplier) {
         intakeMotorInner.set(-speedMultiplier);
-        intakeMotorOuter.set(-speedMultiplier);
+        intakeMotorOuter.set(speedMultiplier);
     }
+
 }

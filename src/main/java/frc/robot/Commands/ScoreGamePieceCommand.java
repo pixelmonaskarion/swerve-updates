@@ -52,7 +52,7 @@ public class ScoreGamePieceCommand extends CommandBase {
     @Override
     public void execute() {
         arm.expand();
-        elevator.moveElevator(() -> elevatorSetpoint);
+        elevator.moveElevator(elevatorSetpoint);
 
         if (timer.get() > 4) {
             if (Constants.curGamePiece == GamePiece.CONE) {

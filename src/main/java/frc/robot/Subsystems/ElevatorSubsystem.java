@@ -23,7 +23,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final CANSparkMax elevatorMotor2;
    
     private final SparkMaxPIDController m_pidController1;
-    private final SparkMaxPIDController m_pidController2;
     private final RelativeEncoder m_encoder1;
     private final RelativeEncoder m_encoder2;
     public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
@@ -38,17 +37,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       elevatorMotor1.setIdleMode(IdleMode.kBrake);
       elevatorMotor1.restoreFactoryDefaults();
-      elevatorMotor1.setSoftLimit(SoftLimitDirection.kForward, 51);
-      elevatorMotor1.setSoftLimit(SoftLimitDirection.kReverse, 51);
+      //elevatorMotor1.setSoftLimit(SoftLimitDirection.kForward, 51);
+      //elevatorMotor1.setSoftLimit(SoftLimitDirection.kReverse, 51);
+      elevatorMotor1.setInverted(true);
+      elevatorMotor2.follow(elevatorMotor1, true);
       motorList.add(elevatorMotor1);
-      elevatorMotor2.setIdleMode(IdleMode.kBrake);
-      elevatorMotor2.restoreFactoryDefaults();
-      elevatorMotor2.setSoftLimit(SoftLimitDirection.kForward, 51);
-      elevatorMotor2.setSoftLimit(SoftLimitDirection.kReverse, 51);
       motorList.add(elevatorMotor2);
 
       m_pidController1 = elevatorMotor1.getPIDController();
-      m_pidController2 = elevatorMotor2.getPIDController();
 
       // PID coefficients
       kP = 0.1; 
@@ -66,12 +62,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       m_pidController1.setIZone(kIz);
       m_pidController1.setFF(kFF);
       m_pidController1.setOutputRange(kMinOutput, kMaxOutput);
-      m_pidController2.setP(kP);
-      m_pidController2.setI(kI);
-      m_pidController2.setD(kD);
-      m_pidController2.setIZone(kIz);
-      m_pidController2.setFF(kFF);
-      m_pidController2.setOutputRange(kMinOutput, kMaxOutput);
+
   
       // display PID coefficients on SmartDashboard
       SmartDashboard.putNumber("P Gain", kP);
@@ -82,19 +73,22 @@ public class ElevatorSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Max Output", kMaxOutput);
       SmartDashboard.putNumber("Min Output", kMinOutput);
       SmartDashboard.putNumber("Set Rotations", 0);
+      SmartDashboard.putNumber("elevator setpoint", 0);
     }
-  
+
+
    
-    public void moveElevator(DoubleSupplier joystickPos) {
+    public void moveElevator(Double setpoint) {
       // read PID coefficients from SmartDashboard
-      double p = SmartDashboard.getNumber("P Gain", 0);
+      double p = SmartDashboard.getNumber("P Gain", 1);
       double i = SmartDashboard.getNumber("I Gain", 0);
       double d = SmartDashboard.getNumber("D Gain", 0);
       double iz = SmartDashboard.getNumber("I Zone", 0);
       double ff = SmartDashboard.getNumber("Feed Forward", 0);
       double max = SmartDashboard.getNumber("Max Output", 0);
       double min = SmartDashboard.getNumber("Min Output", 0);
-      double rotations = MathUtil.clamp(joystickPos.getAsDouble(), -0.1, 0.1);
+      // double rotations = MathUtil.clamp(setpoint, -0.1, 0.1);
+      double spt = SmartDashboard.getNumber("elevator setpoint", 0);
   
       // if PID coefficients on SmartDashboard have changed, write new values to controller
       if((p != kP)) { m_pidController1.setP(p); kP = p; }
@@ -107,10 +101,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         kMinOutput = min; kMaxOutput = max; 
       }
   
-      m_pidController1.setReference(rotations, CANSparkMax.ControlType.kPosition);
-      m_pidController2.setReference(rotations, CANSparkMax.ControlType.kPosition);
+      m_pidController1.setReference(spt, CANSparkMax.ControlType.kPosition);
       
-      SmartDashboard.putNumber("SetPoint", rotations);
+      SmartDashboard.putNumber("SetPoint", spt);
       SmartDashboard.putNumber("ProcessVariable1", m_encoder1.getPosition());
       SmartDashboard.putNumber("ProcessVariable2", m_encoder2.getPosition());
     }
@@ -118,13 +111,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   
     public void movementTest(boolean extend, boolean retract) {
       if (extend) {
-        elevatorMotor1.set(0.1);
-        elevatorMotor2.set(-0.1);
+        elevatorMotor1.set(0.8);
+        elevatorMotor2.set(-0.8);
       }
 
         if (retract) {
-        elevatorMotor1.set(-0.1);
-        elevatorMotor2.set(0.1);
+        elevatorMotor1.set(-0.8);
+        elevatorMotor2.set(0.8);
       }
     }
 

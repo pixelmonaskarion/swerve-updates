@@ -32,7 +32,7 @@ public class ChargeStationBalanceCommand extends CommandBase {
         timer.reset();
         timer.start();
 
-        elevator.moveElevator(() -> ELEVATOR_SETPOINT);
+        elevator.moveElevator(ELEVATOR_SETPOINT);
     }
 
     @Override

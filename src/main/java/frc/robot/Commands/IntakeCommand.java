@@ -1,6 +1,5 @@
 package frc.robot.Commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -14,7 +13,6 @@ public class IntakeCommand extends CommandBase {
     private IntakeSubsystem intake;
     private double intakeSpeedMultiplier;
 
-    private final Timer timer;
     
     //arm down, turn on intake
     public IntakeCommand(ArmSubsystem arm, IntakeSubsystem intake, double intakeSpeedMultiplier) {
@@ -22,16 +20,12 @@ public class IntakeCommand extends CommandBase {
         this.intake = intake;
         this.intakeSpeedMultiplier = intakeSpeedMultiplier;
 
-        timer = new Timer();
         addRequirements(arm, intake);
     }
 
     @Override
     public void initialize() {
         CommandScheduler.getInstance().schedule(new InstantCommand(arm::retract));
-        Constants.curGamePiece = GamePiece.CONE;
-
-        timer.start();
     }
 
     @Override
@@ -41,15 +35,5 @@ public class IntakeCommand extends CommandBase {
         } else if (Constants.curGamePiece == GamePiece.CUBE) {
             intake.pickUpCube(intakeSpeedMultiplier);
         }
-    }
-
-    @Override
-    public boolean isFinished() {
-        return timer.hasElapsed(3) ? true : false;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        timer.stop();
     }
 }

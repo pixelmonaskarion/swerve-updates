@@ -53,7 +53,9 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-
+    SmartDashboard.putBoolean("GamePiece/CubeMode", false);
+    SmartDashboard.putBoolean("GamePiece/ConeMode", false);
+   
     m_robotDrive = new DriveSubsystem();
     m_vision = new VisionSubsystem();
     m_elevator = new ElevatorSubsystem();
@@ -85,11 +87,8 @@ public class RobotContainer {
             m_operatorController.getRawButton(8)), //retract
             m_elevator));*/
 
-    m_arm.setDefaultCommand(
-      new RunCommand(() -> m_arm.retract(), m_arm));
-
-    SmartDashboard.putBoolean("GamePiece/CubeMode", false);
-    SmartDashboard.putBoolean("GamePiece/ConeMode", false);
+   // m_arm.setDefaultCommand(
+    //  new RunCommand(() -> m_arm.expand(), m_arm));
   }
 
 
@@ -116,13 +115,13 @@ public class RobotContainer {
     }
     
     new Trigger(() -> m_operatorController.getRawButton(2))
-      .onTrue(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier));
+      .onTrue(new IntakeCommand(m_arm, m_intake, 0.01));
 
 
     //mirrored base buttons
 
-     /* 
-    new Trigger(() -> m_operatorController.getRawButton(7) || m_operatorController.getRawButton(14))
+      
+    new Trigger(() -> m_operatorController.getRawButton(7))
       .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.MID, intakeSpeedMultiplier));
 
     new Trigger(() -> m_operatorController.getRawButton(6) || m_operatorController.getRawButton(12))
@@ -131,37 +130,39 @@ public class RobotContainer {
     new Trigger(() -> m_operatorController.getRawButton(5) || m_operatorController.getRawButton(11))
       .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.HIGH, intakeSpeedMultiplier));
 
-    new Trigger(() -> m_operatorController.getRawButton(10) || m_operatorController.getRawButton(16))
+    new Trigger(() -> m_operatorController.getRawButton(10))
       .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.SUBSTATION, intakeSpeedMultiplier));
 
-    new Trigger(() -> m_operatorController.getRawButton(8) || m_operatorController.getRawButton(14))
+    new Trigger(() -> m_operatorController.getRawButton(8))
       .onTrue(new ToStartConfigCommand(m_arm, m_elevator));
-    */
+    
 
     //ground intake
-    /* 
-    new Trigger(() -> m_operatorController.getRawButton(9) || m_operatorController.getRawButton(15))
-      .onTrue(new ToStartConfigCommand(m_arm, m_elevator)
-        .andThen(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier)));
-    */
-
-    //test triggers to isolate subsystems
-
-   // new Trigger(() -> m_operatorController.getRawButton(9))
-      //.onTrue(new RunCommand(() -> m_elevatorTrapezoidal.setGoal(1), m_elevatorTrapezoidal));
-      //new ElevatorCommand(m_elevator, 1)
     
-     
-    new Trigger(() -> m_operatorController.getRawButton(7) || m_operatorController.getRawButton(8))
-      .onTrue(new RunCommand(() -> m_elevator.movementTest(m_operatorController.getRawButton(7), m_operatorController.getRawButton(8)), m_elevator)
-        .withTimeout(0.8));   
+    new Trigger(() -> m_operatorController.getRawButton(9))
+      .whileTrue(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier));
+      //.onTrue(new ToStartConfigCommand(m_arm, m_elevator)
+       // .andThen(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier)));
+
+    new Trigger(() -> m_operatorController.getRawButton(13))
+      .onTrue(new RunCommand(() -> m_arm.retract(), m_arm));
+       
+    new Trigger(() -> m_operatorController.getRawButton(14))
+      .onTrue(new RunCommand(() -> m_arm.expand(), m_arm));
+   
+    new Trigger(() -> m_operatorController.getRawButton(15))
+      .onTrue(new RunCommand(() -> m_elevator.moveElevator(30.0), m_elevator));
+   
+    new Trigger(() -> m_operatorController.getRawButton(16))
+      .whileTrue(new RunCommand(() -> m_intake.pickUpCone(intakeSpeedMultiplier), m_intake).withTimeout(1));
+       
     
   }
 
   
   public double wAxisSpeedMultiplier() {
     double mult = (m_operatorController.getRawAxis(3) + 1)/2;
-    return MathUtil.clamp(Math.log(mult*10), 0.1, 1);
+    return MathUtil.clamp(Math.log(mult*10), 0.1, 0.7);
   }
 
   public boolean triggerPressed() {

@@ -18,7 +18,7 @@ public class ElevatorCommand extends CommandBase {
 
     @Override
     public void execute() {
-        elevator.moveElevator(() -> setpoint);
+        elevator.moveElevator(setpoint);
     }
 
     
