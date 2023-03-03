@@ -21,7 +21,6 @@ import frc.robot.PathPlanningCode.AutoUtils;
 import frc.robot.Subsystems.ArmSubsystem;
 import frc.robot.Subsystems.DriveSubsystem;
 import frc.robot.Subsystems.ElevatorSubsystem;
-import frc.robot.Subsystems.ElevatorTrapezoidalSubsystem;
 import frc.robot.Subsystems.IntakeSubsystem;
 import frc.robot.Subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -117,21 +116,18 @@ public class RobotContainer {
     new Trigger(() -> m_operatorController.getRawButton(2))
       .onTrue(new IntakeCommand(m_arm, m_intake, 0.01));
 
-
-    //mirrored base buttons
-
       
     new Trigger(() -> m_operatorController.getRawButton(7))
-      .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.MID, intakeSpeedMultiplier));
+      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.MID, intakeSpeedMultiplier));
 
     new Trigger(() -> m_operatorController.getRawButton(6) || m_operatorController.getRawButton(12))
-      .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.MIDHIGH, intakeSpeedMultiplier));
+      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.MIDHIGH, intakeSpeedMultiplier));
 
     new Trigger(() -> m_operatorController.getRawButton(5) || m_operatorController.getRawButton(11))
-      .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.HIGH, intakeSpeedMultiplier));
+      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.HIGH, intakeSpeedMultiplier));
 
     new Trigger(() -> m_operatorController.getRawButton(10))
-      .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.SUBSTATION, intakeSpeedMultiplier));
+      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.SUBSTATION, intakeSpeedMultiplier));
 
     new Trigger(() -> m_operatorController.getRawButton(8))
       .onTrue(new ToStartConfigCommand(m_arm, m_elevator));
@@ -143,6 +139,12 @@ public class RobotContainer {
       .whileTrue(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier));
       //.onTrue(new ToStartConfigCommand(m_arm, m_elevator)
        // .andThen(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier)));
+
+
+    //testing
+    if (m_operatorController.getRawAxis(2) != 0) {
+      new RunCommand(() -> m_elevator.moveElevator(m_operatorController.getRawAxis(2)), m_elevator);
+    }
 
     new Trigger(() -> m_operatorController.getRawButton(13))
       .onTrue(new RunCommand(() -> m_arm.retract(), m_arm));
