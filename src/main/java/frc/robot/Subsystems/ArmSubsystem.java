@@ -15,12 +15,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     public ArmSubsystem() {
         sol = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.SOLENOID_forward1, Constants.SOLENOID_reverse1);
-
-        try {
-            sol.wait(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
     
 

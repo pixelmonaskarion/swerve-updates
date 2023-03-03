@@ -155,10 +155,10 @@ public final class Constants {
   }
 
   //to do: change to actual ports
-  public static final int ELEVATOR_MOTOR_ID_MASTER = 0;
-  public static final int ELEVATOR_MOTOR_ID_SLAVE = 1;
-  public static final int INTAKE_MOTOR_INNER = 2;
-  public static final int INTAKE_MOTOR_OUTER = 3;
+  public static final int ELEVATOR_MOTOR_ID_MASTER = 17;
+  public static final int ELEVATOR_MOTOR_ID_SLAVE = 16;
+  public static final int INTAKE_MOTOR_INNER = 12;
+  public static final int INTAKE_MOTOR_OUTER = 13;
 
 
   public static final double ELEVATOR_kS = 0.2;
@@ -171,12 +171,13 @@ public final class Constants {
   public static final int SOLENOID_forward1 = 0;
   public static final int SOLENOID_reverse1 = 1;
 
+  public static GamePiece curGamePiece = null;
 
   public enum GamePiece {
     CONE, CUBE
   }
 
   public enum ScoringLocation { 
-    LOW, MID, MIDHIGH, HIGH
+    LOW, MID, MIDHIGH, HIGH, SUBSTATION
   }
 }

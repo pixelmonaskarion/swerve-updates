@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
@@ -37,9 +38,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       elevatorMotor1.setIdleMode(IdleMode.kBrake);
       elevatorMotor1.restoreFactoryDefaults();
+      elevatorMotor1.setSoftLimit(SoftLimitDirection.kForward, 51);
+      elevatorMotor1.setSoftLimit(SoftLimitDirection.kReverse, 51);
       motorList.add(elevatorMotor1);
       elevatorMotor2.setIdleMode(IdleMode.kBrake);
       elevatorMotor2.restoreFactoryDefaults();
+      elevatorMotor2.setSoftLimit(SoftLimitDirection.kForward, 51);
+      elevatorMotor2.setSoftLimit(SoftLimitDirection.kReverse, 51);
       motorList.add(elevatorMotor2);
 
       m_pidController1 = elevatorMotor1.getPIDController();
@@ -113,11 +118,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   
     public void movementTest(boolean extend, boolean retract) {
       if (extend) {
-        elevatorMotor1.set(0.5);
-        elevatorMotor2.set(0.5);
-      } else if (retract) {
-        elevatorMotor1.set(-0.5);
-        elevatorMotor2.set(-0.5);
+        elevatorMotor1.set(0.1);
+        elevatorMotor2.set(-0.1);
+      }
+
+        if (retract) {
+        elevatorMotor1.set(-0.1);
+        elevatorMotor2.set(0.1);
       }
     }
 

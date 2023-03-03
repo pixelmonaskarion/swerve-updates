@@ -5,9 +5,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.VisionTurnCommand;
+import frc.robot.Constants.GamePiece;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Commands.IntakeGamePieceCommand;
+import frc.robot.Commands.ArmTest;
+import frc.robot.Commands.ElevatorCommand;
+import frc.robot.Commands.IntakeCommand;
+import frc.robot.Commands.IntakeCommand;
 import frc.robot.Commands.ScoreGamePieceCommand;
 import frc.robot.Commands.SimpleDriveCommand;
 import frc.robot.Commands.ToStartConfigCommand;
@@ -46,15 +51,13 @@ public class RobotContainer {
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   Joystick m_operatorController = new Joystick(OIConstants.kIOperatorControllerPort);
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+
   public RobotContainer() {
 
     m_robotDrive = new DriveSubsystem();
     m_vision = new VisionSubsystem();
     m_elevator = new ElevatorSubsystem();
-    //m_elevatorTrapezoidal = new ElevatorTrapezoidalSubsystem(new TrapezoidProfile.Constraints(2.5, 2.5));
+   // m_elevatorTrapezoidal = new ElevatorTrapezoidalSubsystem(new TrapezoidProfile.Constraints(2.5, 2.5));
     m_arm = new ArmSubsystem();
     m_intake = new IntakeSubsystem();
 
@@ -67,19 +70,26 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(-m_driverController.getLeftY(), 0.06),
-                MathUtil.applyDeadband(-m_driverController.getLeftX(), 0.06),
-                MathUtil.applyDeadband(-m_driverController.getRightX(), 0.06),
-                MathUtil.applyDeadband(-m_driverController.getRightY(), 0.06),
+                MathUtil.applyDeadband(-0.7*m_driverController.getLeftY(), 0.06),
+                MathUtil.applyDeadband(-0.7*m_driverController.getLeftX(), 0.06),
+                MathUtil.applyDeadband(-0.7*m_driverController.getRightX(), 0.06),
+                MathUtil.applyDeadband(-0.7*m_driverController.getRightY(), 0.06),
                 m_driverController.getRightBumper(), m_driverController.getAButton()),
             m_robotDrive));
 
+            /* 
     m_elevator.setDefaultCommand(
       new RunCommand(
         () -> m_elevator.movementTest(
-            m_operatorController.getRawButton(4), 
-            m_operatorController.getRawButton(5)),
-            m_elevator));
+            m_operatorController.getRawButton(7), //extend
+            m_operatorController.getRawButton(8)), //retract
+            m_elevator));*/
+
+    m_arm.setDefaultCommand(
+      new RunCommand(() -> m_arm.retract(), m_arm));
+
+    SmartDashboard.putBoolean("GamePiece/CubeMode", false);
+    SmartDashboard.putBoolean("GamePiece/ConeMode", false);
   }
 
 
@@ -94,26 +104,61 @@ public class RobotContainer {
     new Trigger(() -> triggerPressed())
       .whileTrue(new SimpleDriveCommand(m_robotDrive, m_driverController));
 
-    new Trigger(() -> m_operatorController.getRawButton(0))
-      .onTrue(new RunCommand(() -> m_intake.releaseCargo(intakeSpeedMultiplier), m_intake));
-    
     new Trigger(() -> m_operatorController.getRawButton(1))
-      .onTrue(new IntakeGamePieceCommand(m_arm, m_intake, intakeSpeedMultiplier));
+      .onTrue(new RunCommand(() -> m_intake.releaseGamePiece(intakeSpeedMultiplier), m_intake));
 
-    new Trigger(() -> m_operatorController.getRawButton(11))
+    if (m_operatorController.getRawButton(4)) {
+      Constants.curGamePiece = GamePiece.CONE;
+    }
+
+    if (m_operatorController.getRawButton(3)) {
+      Constants.curGamePiece = GamePiece.CUBE;
+    }
+    
+    new Trigger(() -> m_operatorController.getRawButton(2))
+      .onTrue(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier));
+
+
+    //mirrored base buttons
+
+     /* 
+    new Trigger(() -> m_operatorController.getRawButton(7) || m_operatorController.getRawButton(14))
       .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.MID, intakeSpeedMultiplier));
 
-    new Trigger(() -> m_operatorController.getRawButton(15))
+    new Trigger(() -> m_operatorController.getRawButton(6) || m_operatorController.getRawButton(12))
       .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.MIDHIGH, intakeSpeedMultiplier));
 
-    new Trigger(() -> m_operatorController.getRawButton(10))
+    new Trigger(() -> m_operatorController.getRawButton(5) || m_operatorController.getRawButton(11))
       .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.HIGH, intakeSpeedMultiplier));
 
-    new Trigger(() -> m_operatorController.getRawButton(13))
+    new Trigger(() -> m_operatorController.getRawButton(10) || m_operatorController.getRawButton(16))
+      .onTrue(new ScoreGamePieceCommand(m_arm, m_elevator, m_intake, Constants.ScoringLocation.SUBSTATION, intakeSpeedMultiplier));
+
+    new Trigger(() -> m_operatorController.getRawButton(8) || m_operatorController.getRawButton(14))
       .onTrue(new ToStartConfigCommand(m_arm, m_elevator));
-      
+    */
+
+    //ground intake
+    /* 
+    new Trigger(() -> m_operatorController.getRawButton(9) || m_operatorController.getRawButton(15))
+      .onTrue(new ToStartConfigCommand(m_arm, m_elevator)
+        .andThen(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier)));
+    */
+
+    //test triggers to isolate subsystems
+
+   // new Trigger(() -> m_operatorController.getRawButton(9))
+      //.onTrue(new RunCommand(() -> m_elevatorTrapezoidal.setGoal(1), m_elevatorTrapezoidal));
+      //new ElevatorCommand(m_elevator, 1)
+    
+     
+    new Trigger(() -> m_operatorController.getRawButton(7) || m_operatorController.getRawButton(8))
+      .onTrue(new RunCommand(() -> m_elevator.movementTest(m_operatorController.getRawButton(7), m_operatorController.getRawButton(8)), m_elevator)
+        .withTimeout(0.8));   
+    
   }
 
+  
   public double wAxisSpeedMultiplier() {
     double mult = (m_operatorController.getRawAxis(3) + 1)/2;
     return MathUtil.clamp(Math.log(mult*10), 0.1, 1);

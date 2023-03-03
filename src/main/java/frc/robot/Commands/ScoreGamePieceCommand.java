@@ -2,6 +2,8 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.Constants.GamePiece;
 import frc.robot.Constants.ScoringLocation;
 import frc.robot.Subsystems.ArmSubsystem;
 import frc.robot.Subsystems.ElevatorSubsystem;
@@ -42,6 +44,8 @@ public class ScoreGamePieceCommand extends CommandBase {
             elevatorSetpoint = 1;
         } else if (location == ScoringLocation.HIGH) {
             elevatorSetpoint = 1.5;
+        } else if (location == ScoringLocation.SUBSTATION) {
+            elevatorSetpoint = 0.7;
         }
     }
 
@@ -51,7 +55,13 @@ public class ScoreGamePieceCommand extends CommandBase {
         elevator.moveElevator(() -> elevatorSetpoint);
 
         if (timer.get() > 4) {
-            intake.releaseCargo(intakeSpeedMultiplier);
+            if (Constants.curGamePiece == GamePiece.CONE) {
+                intake.releaseCone(intakeSpeedMultiplier);
+                Constants.curGamePiece = null;
+            } else if (Constants.curGamePiece == GamePiece.CUBE) {
+                intake.releaseCube(intakeSpeedMultiplier);
+                Constants.curGamePiece = null;
+            }
         }
     }
 

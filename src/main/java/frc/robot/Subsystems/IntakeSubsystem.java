@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.GamePiece;
 
 public class IntakeSubsystem extends SubsystemBase {
     private CANSparkMax intakeMotorInner;
@@ -19,16 +20,33 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotorInner.restoreFactoryDefaults();
         intakeMotorOuter.setIdleMode(IdleMode.kBrake);
         intakeMotorOuter.restoreFactoryDefaults();
-
     }
 
-    public void pickUpCargo(double speedMultiplier) {
+    public void releaseGamePiece(double speedMultiplier) {
+        if (Constants.curGamePiece == GamePiece.CONE) {
+            releaseCone(speedMultiplier);
+        } else if (Constants.curGamePiece == GamePiece.CUBE) {
+            releaseCube(speedMultiplier);
+        }
+    }
+
+    public void pickUpCone(double speedMultiplier) {
+        intakeMotorInner.set(speedMultiplier);
+        intakeMotorOuter.set(-speedMultiplier);
+    }
+
+    public void releaseCone(double speedMultiplier) {
         intakeMotorInner.set(-speedMultiplier);
         intakeMotorOuter.set(speedMultiplier);
     }
 
-    public void releaseCargo(double speedMultiplier) {
+    public void pickUpCube(double speedMultiplier) {
         intakeMotorInner.set(speedMultiplier);
+        intakeMotorOuter.set(speedMultiplier);
+    }
+
+    public void releaseCube(double speedMultiplier) {
+        intakeMotorInner.set(-speedMultiplier);
         intakeMotorOuter.set(-speedMultiplier);
     }
 }

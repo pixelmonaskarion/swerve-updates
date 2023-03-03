@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.RobotContainer;
 import frc.robot.Commands.ChargeStationBalanceCommand;
-import frc.robot.Commands.IntakeGamePieceCommand;
+import frc.robot.Commands.IntakeCommand;
 import frc.robot.Commands.ScoreGamePieceCommand;
 import frc.robot.Commands.VisionTranslateCommand;
 import frc.robot.Commands.VisionTurnCommand;
@@ -119,7 +119,7 @@ public class AutoUtils {
       return simpleTrajectoryCommand(container, trajectory)
         .andThen(new VisionTurnCommand(container.getVision(), container.getDrive(), container.getController()));
     }
-
+/* 
     //to do: write score command (if for low level, no additional code is needed)
     public Command priorityOneAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
       return simpleTrajectoryCommand(container, initDriveToScore())
@@ -139,7 +139,7 @@ public class AutoUtils {
       return simpleTrajectoryCommand(container, initDriveToScore())
         .andThen(rotate180(container))
         .andThen(simpleTrajectoryCommand(container, driveToStagedGamePiece(startPos)))
-        .andThen(new IntakeGamePieceCommand(container.getArm(), container.getIntake(), 1.0))
+        .andThen(new IntakeCommand(container.getArm(), container.getIntake(), 1.0))
         .andThen(rotate180(container))
           .deadlineWith(new VisionTranslateCommand(container.getVision(), container.getDrive(), container.getController()))
         .andThen(new ScoreGamePieceCommand(container.getArm(), container.getElevator(), container.getIntake(), location, 1.0));
@@ -150,7 +150,7 @@ public class AutoUtils {
         .andThen(rotate180(container))
         .andThen(simpleTrajectoryCommand(container, getOnChargeStation(startPos)));
     }
-
+*/
     //test
     private Trajectory simpleCurve() {
       Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
@@ -265,6 +265,7 @@ public class AutoUtils {
 
   //start position chooser is fed into this for start position-dependent trajectories
   public Command chooseAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
+    /* 
     switch(autoChooser.getSelected()) {
       case SIMPLE_TRAJECTORY:
         return simpleTrajectoryCommand(container, simpleCurve());
@@ -280,7 +281,8 @@ public class AutoUtils {
         return priorityFourAuto(container, startPos, location);
       default:
         return simpleCmdGrp(container);
-    }
+    }*/
+    return null;
   }
 
   public StartPos chooseStartPos() {

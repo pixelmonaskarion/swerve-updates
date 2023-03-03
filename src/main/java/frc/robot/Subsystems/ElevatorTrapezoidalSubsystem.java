@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 
 import frc.robot.Constants;
@@ -45,6 +46,9 @@ public class ElevatorTrapezoidalSubsystem extends TrapezoidProfileSubsystem {
         m_pidController2.setP(1);
         m_pidController2.setI(0);
         m_pidController2.setD(0);
+
+
+        SmartDashboard.putNumber("elevatormotor1", 0);
     }
 
     @Override
@@ -63,6 +67,7 @@ public class ElevatorTrapezoidalSubsystem extends TrapezoidProfileSubsystem {
     @Override 
     public void periodic() {
         super.periodic();
+        SmartDashboard.putNumber("elevatormotor1", elevatorMotor1.getAppliedOutput());
     }
 
     public double getElevatorLength() {
