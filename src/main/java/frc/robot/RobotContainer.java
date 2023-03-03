@@ -118,16 +118,16 @@ public class RobotContainer {
 
       
     new Trigger(() -> m_operatorController.getRawButton(7))
-      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.MID, intakeSpeedMultiplier));
+      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, m_driverController, Constants.ScoringLocation.MID, intakeSpeedMultiplier));
 
     new Trigger(() -> m_operatorController.getRawButton(6))
-      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.MIDHIGH, intakeSpeedMultiplier));
+      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, m_driverController, Constants.ScoringLocation.MIDHIGH, intakeSpeedMultiplier));
 
     new Trigger(() -> m_operatorController.getRawButton(5))
-      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.HIGH, intakeSpeedMultiplier));
+      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, m_driverController, Constants.ScoringLocation.HIGH, intakeSpeedMultiplier));
 
     new Trigger(() -> m_operatorController.getRawButton(10))
-      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.SUBSTATION, intakeSpeedMultiplier));
+      .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, m_driverController, Constants.ScoringLocation.SUBSTATION, intakeSpeedMultiplier));
 
     new Trigger(() -> m_operatorController.getRawButton(8))
       .onTrue(new ToStartConfigCommand(m_arm, m_elevator));
@@ -136,9 +136,8 @@ public class RobotContainer {
     //ground intake
     
     new Trigger(() -> m_operatorController.getRawButton(9))
-      .whileTrue(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier));
-      //.onTrue(new ToStartConfigCommand(m_arm, m_elevator)
-       // .andThen(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier)));
+      .onTrue(new ToStartConfigCommand(m_arm, m_elevator)
+       .andThen(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier)));
   
 
     //testing
