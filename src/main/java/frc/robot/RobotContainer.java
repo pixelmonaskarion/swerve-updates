@@ -120,10 +120,10 @@ public class RobotContainer {
     new Trigger(() -> m_operatorController.getRawButton(7))
       .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.MID, intakeSpeedMultiplier));
 
-    new Trigger(() -> m_operatorController.getRawButton(6) || m_operatorController.getRawButton(12))
+    new Trigger(() -> m_operatorController.getRawButton(6))
       .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.MIDHIGH, intakeSpeedMultiplier));
 
-    new Trigger(() -> m_operatorController.getRawButton(5) || m_operatorController.getRawButton(11))
+    new Trigger(() -> m_operatorController.getRawButton(5))
       .onTrue(new ScoreGamePieceCommand(m_elevator, m_intake, Constants.ScoringLocation.HIGH, intakeSpeedMultiplier));
 
     new Trigger(() -> m_operatorController.getRawButton(10))
@@ -139,23 +139,23 @@ public class RobotContainer {
       .whileTrue(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier));
       //.onTrue(new ToStartConfigCommand(m_arm, m_elevator)
        // .andThen(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier)));
-
+  
 
     //testing
-    if (m_operatorController.getRawAxis(2) != 0) {
+    if (m_operatorController.getRawAxis(1) != 0) {
       new RunCommand(() -> m_elevator.moveElevator(m_operatorController.getRawAxis(2)), m_elevator);
     }
 
-    new Trigger(() -> m_operatorController.getRawButton(13))
+    new Trigger(() -> m_operatorController.getRawButton(16))
       .onTrue(new RunCommand(() -> m_arm.retract(), m_arm));
        
-    new Trigger(() -> m_operatorController.getRawButton(14))
+    new Trigger(() -> m_operatorController.getRawButton(15))
       .onTrue(new RunCommand(() -> m_arm.expand(), m_arm));
    
-    new Trigger(() -> m_operatorController.getRawButton(15))
+    new Trigger(() -> m_operatorController.getRawButton(14))
       .onTrue(new RunCommand(() -> m_elevator.moveElevator(30.0), m_elevator));
    
-    new Trigger(() -> m_operatorController.getRawButton(16))
+    new Trigger(() -> m_operatorController.getRawButton(13))
       .whileTrue(new RunCommand(() -> m_intake.pickUpCone(intakeSpeedMultiplier), m_intake).withTimeout(1));
        
     
