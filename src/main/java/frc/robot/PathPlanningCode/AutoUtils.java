@@ -119,11 +119,11 @@ public class AutoUtils {
       return simpleTrajectoryCommand(container, trajectory)
         .andThen(new VisionTurnCommand(container.getVision(), container.getDrive(), container.getController()));
     }
-/* 
+
     //to do: write score command (if for low level, no additional code is needed)
     public Command priorityOneAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
       return simpleTrajectoryCommand(container, initDriveToScore())
-        .andThen(new ScoreGamePieceCommand(container.getArm(), container.getElevator(), container.getIntake(), location, 1.0))
+        .andThen(new ScoreGamePieceCommand(container.getElevator(), container.getIntake(), location, 1.0))
         .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
     }
 
@@ -142,7 +142,7 @@ public class AutoUtils {
         .andThen(new IntakeCommand(container.getArm(), container.getIntake(), 1.0))
         .andThen(rotate180(container))
           .deadlineWith(new VisionTranslateCommand(container.getVision(), container.getDrive(), container.getController()))
-        .andThen(new ScoreGamePieceCommand(container.getArm(), container.getElevator(), container.getIntake(), location, 1.0));
+        .andThen(new ScoreGamePieceCommand(container.getElevator(), container.getIntake(), location, 1.0));
     }
 
     public Command priorityFourAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
@@ -150,7 +150,7 @@ public class AutoUtils {
         .andThen(rotate180(container))
         .andThen(simpleTrajectoryCommand(container, getOnChargeStation(startPos)));
     }
-*/
+
     //test
     private Trajectory simpleCurve() {
       Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
@@ -265,7 +265,6 @@ public class AutoUtils {
 
   //start position chooser is fed into this for start position-dependent trajectories
   public Command chooseAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
-    /* 
     switch(autoChooser.getSelected()) {
       case SIMPLE_TRAJECTORY:
         return simpleTrajectoryCommand(container, simpleCurve());
@@ -281,8 +280,7 @@ public class AutoUtils {
         return priorityFourAuto(container, startPos, location);
       default:
         return simpleCmdGrp(container);
-    }*/
-    return null;
+    }
   }
 
   public StartPos chooseStartPos() {

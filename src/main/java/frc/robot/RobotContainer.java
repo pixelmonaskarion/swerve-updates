@@ -162,7 +162,7 @@ public class RobotContainer {
   
   public double wAxisSpeedMultiplier() {
     double mult = (m_operatorController.getRawAxis(3) + 1)/2;
-    return MathUtil.clamp(Math.log(mult*10), 0.1, 0.7);
+    return MathUtil.clamp(Math.log(mult*10), 0.1, 0.8);
   }
 
   public boolean triggerPressed() {

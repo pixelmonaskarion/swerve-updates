@@ -39,13 +39,13 @@ public class ScoreGamePieceCommand extends CommandBase {
         timer.start();
 
         if (location == ScoringLocation.MID) {
-            elevatorSetpoint = 0.5;
+            elevatorSetpoint = 30;
         } else if (location == ScoringLocation.MIDHIGH) {
-            elevatorSetpoint = 1;
+            elevatorSetpoint = 50;
         } else if (location == ScoringLocation.HIGH) {
-            elevatorSetpoint = 1.5;
+            elevatorSetpoint = 102;
         } else if (location == ScoringLocation.SUBSTATION) {
-            elevatorSetpoint = 0.7;
+            elevatorSetpoint = 76;
         }
     }
 
