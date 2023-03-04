@@ -19,6 +19,7 @@ import frc.robot.Subsystems.IntakeSubsystem;
 import frc.robot.Subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
@@ -124,7 +125,7 @@ public class RobotContainer {
   
   public double wAxisSpeedMultiplier() {
     double mult = (m_operatorController.getRawAxis(3) + 1)/2;
-    return MathUtil.clamp(Math.log(mult*10), 0.1, 0.8);
+    return MathUtil.clamp(Math.log(10*mult), 0.1, 1);
   }
 
   public boolean triggerPressed() {

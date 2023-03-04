@@ -1,5 +1,6 @@
 package frc.robot.Commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeGamePiece;
@@ -8,12 +9,14 @@ import frc.robot.Subsystems.IntakeSubsystem;
 public class IntakeCommand extends CommandBase {
     private IntakeSubsystem intake;
     private double intakeSpeedMultiplier;
+    private Timer timer;
 
     
     //arm down, turn on intake
     public IntakeCommand(IntakeSubsystem intake, double intakeSpeedMultiplier) {
         this.intake = intake;
         this.intakeSpeedMultiplier = intakeSpeedMultiplier;
+        timer = new Timer();
 
         addRequirements(intake);
     }

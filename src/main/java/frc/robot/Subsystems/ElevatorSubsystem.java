@@ -111,12 +111,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void simpleMovement(double input) {
      // input = MathUtil.clamp(SmartDashboard.getNumber("elevator motor power",0), -1, 1);
-     System.out.println("ElevaturSubsytem::simpleMovement");
       
       if (input > 0.1) {
         elevatorMotor1.set(-0.25);
       } else if (input < -0.1) {
         elevatorMotor1.set(0.25);
+      } else {
+        elevatorMotor1.set(0);
       }
     }
 

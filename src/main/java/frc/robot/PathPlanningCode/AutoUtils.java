@@ -65,10 +65,9 @@ public class AutoUtils {
 
     
     public AutoUtils() {
-      autoChooser.setDefaultOption("Simple Drive", AutoModes.SIMPLE_DRIVE);
+      autoChooser.setDefaultOption("Priority 1 Auto", AutoModes.PRIORITY_1_AUTO);
       autoChooser.addOption("Simple Trajectory", AutoModes.SIMPLE_TRAJECTORY);
       autoChooser.addOption("Auto Align Trajectory", AutoModes.AUTO_ALIGN_TRAJECTORY);
-      autoChooser.addOption("Priority 1 Auto", AutoModes.PRIORITY_1_AUTO);
       autoChooser.addOption("Priority 2 Auto", AutoModes.PRIORITY_2_AUTO);
       autoChooser.addOption("Priority 3 Auto", AutoModes.PRIORITY_3_AUTO);
       autoChooser.addOption("Priority 4 Auto", AutoModes.PRIORITY_4_AUTO);
@@ -192,8 +191,8 @@ public class AutoUtils {
       if (pos == StartPos.LEFT_CS || pos == StartPos.RIGHT_CS) {
         trajectory = TrajectoryGenerator.generateTrajectory(
           new Pose2d(),
-          List.of(new Translation2d(-5, 0)),
-          new Pose2d(-5.1, -0.1, new Rotation2d()),
+          List.of(new Translation2d(-3, 0)),
+          new Pose2d(-3.1, -0.1, new Rotation2d()),
           config);
         return trajectory;
       } else if (pos == StartPos.MID_CS) {
