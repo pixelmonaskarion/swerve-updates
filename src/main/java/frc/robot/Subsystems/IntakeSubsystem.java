@@ -31,6 +31,14 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    public void intakeGamePiece(double speedMultiplier) {
+        if (Constants.curGamePiece == GamePiece.CONE) {
+            pickUpCone(speedMultiplier);
+        } else if (Constants.curGamePiece == GamePiece.CUBE) {
+            pickUpCube(speedMultiplier);
+        }
+    }
+
     public void pickUpCone(double speedMultiplier) {
         intakeMotorInner.set(-speedMultiplier);
         intakeMotorOuter.set(-speedMultiplier);
@@ -49,6 +57,11 @@ public class IntakeSubsystem extends SubsystemBase {
     public void releaseCube(double speedMultiplier) {
         intakeMotorInner.set(-speedMultiplier);
         intakeMotorOuter.set(speedMultiplier);
+    }
+
+    public void stopMotors() {
+        intakeMotorInner.set(0);
+        intakeMotorOuter.set(0);
     }
 
 }

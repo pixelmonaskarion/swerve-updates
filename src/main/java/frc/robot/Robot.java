@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.GamePiece;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -47,8 +48,10 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     if (m_robotContainer.getController().getRawButton(3)) {
       SmartDashboard.putBoolean("GamePiece/CubeMode", true);
+      Constants.curGamePiece = GamePiece.CUBE;
     } else if (m_robotContainer.getController().getRawButton(4)) {
       SmartDashboard.putBoolean("GamePiece/CubeMode", true);
+      Constants.curGamePiece = GamePiece.CONE;
     } else {
       SmartDashboard.putBoolean("GamePiece/CubeMode", false);
       SmartDashboard.putBoolean("GamePiece/ConeMode", false);

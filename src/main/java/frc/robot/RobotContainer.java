@@ -23,6 +23,7 @@ import frc.robot.Subsystems.DriveSubsystem;
 import frc.robot.Subsystems.ElevatorSubsystem;
 import frc.robot.Subsystems.IntakeSubsystem;
 import frc.robot.Subsystems.VisionSubsystem;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -38,7 +39,6 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive;
   private final VisionSubsystem m_vision;
   private final ElevatorSubsystem m_elevator;
-  //private final ElevatorTrapezoidalSubsystem m_elevatorTrapezoidal;
   private final ArmSubsystem m_arm;
   private final IntakeSubsystem m_intake;
 
@@ -58,7 +58,6 @@ public class RobotContainer {
     m_robotDrive = new DriveSubsystem();
     m_vision = new VisionSubsystem();
     m_elevator = new ElevatorSubsystem();
-   // m_elevatorTrapezoidal = new ElevatorTrapezoidalSubsystem(new TrapezoidProfile.Constraints(2.5, 2.5));
     m_arm = new ArmSubsystem();
     m_intake = new IntakeSubsystem();
 
@@ -71,23 +70,18 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(-0.7*m_driverController.getLeftY(), 0.06),
-                MathUtil.applyDeadband(-0.7*m_driverController.getLeftX(), 0.06),
-                MathUtil.applyDeadband(-0.7*m_driverController.getRightX(), 0.06),
-                MathUtil.applyDeadband(-0.7*m_driverController.getRightY(), 0.06),
+                MathUtil.applyDeadband(-m_driverController.getLeftY(), 0.06),
+                MathUtil.applyDeadband(-m_driverController.getLeftX(), 0.06),
+                MathUtil.applyDeadband(-m_driverController.getRightX(), 0.06),
+                MathUtil.applyDeadband(-m_driverController.getRightY(), 0.06),
                 m_driverController.getRightBumper(), m_driverController.getAButton()),
             m_robotDrive));
-
-            /* 
+    
     m_elevator.setDefaultCommand(
-      new RunCommand(
-        () -> m_elevator.movementTest(
-            m_operatorController.getRawButton(7), //extend
-            m_operatorController.getRawButton(8)), //retract
-            m_elevator));*/
+        new RunCommand(
+          () -> m_elevator.simpleMovement(
+            m_operatorController.getRawAxis(1)), m_elevator));
 
-   // m_arm.setDefaultCommand(
-    //  new RunCommand(() -> m_arm.expand(), m_arm));
   }
 
 
@@ -103,8 +97,15 @@ public class RobotContainer {
       .whileTrue(new SimpleDriveCommand(m_robotDrive, m_driverController));
 
     new Trigger(() -> m_operatorController.getRawButton(1))
-      .onTrue(new RunCommand(() -> m_intake.releaseGamePiece(intakeSpeedMultiplier), m_intake));
+        .whileTrue(new InstantCommand(() -> m_intake.releaseGamePiece(intakeSpeedMultiplier), m_intake));
 
+      new Trigger(() -> m_operatorController.getRawButton(2))
+      .whileTrue(new InstantCommand(() -> m_intake.intakeGamePiece(intakeSpeedMultiplier), m_intake));
+
+    new Trigger(() -> m_operatorController.getRawButton(14))
+      .onTrue(new InstantCommand(() -> m_intake.stopMotors(), m_intake));
+
+    //not periodic
     if (m_operatorController.getRawButton(4)) {
       Constants.curGamePiece = GamePiece.CONE;
     }
@@ -113,38 +114,11 @@ public class RobotContainer {
       Constants.curGamePiece = GamePiece.CUBE;
     }
     
-    new Trigger(() -> m_operatorController.getRawButton(2))
-      .onTrue(new IntakeCommand(m_arm, m_intake, 0.01));
-
-    new Trigger(() -> m_operatorController.getRawButton(8))
-      .onTrue(new ToStartConfigCommand(m_arm, m_elevator));
-    
-
-    //ground intake
-    
-    new Trigger(() -> m_operatorController.getRawButton(9))
-      .onTrue(new ToStartConfigCommand(m_arm, m_elevator)
-       .andThen(new IntakeCommand(m_arm, m_intake, intakeSpeedMultiplier)));
-  
-
-    //testing
-    if (m_operatorController.getRawAxis(1) != 0) {
-      new RunCommand(() -> m_elevator.moveElevator(m_operatorController.getRawAxis(2)), m_elevator);
-    }
-
     new Trigger(() -> m_operatorController.getRawButton(16))
-      .onTrue(new RunCommand(() -> m_arm.retract(), m_arm));
+      .onTrue(new InstantCommand(m_arm::retract));
        
     new Trigger(() -> m_operatorController.getRawButton(15))
-      .onTrue(new RunCommand(() -> m_arm.expand(), m_arm));
-   
-    new Trigger(() -> m_operatorController.getRawButton(14))
-      .onTrue(new RunCommand(() -> m_elevator.moveElevator(30.0), m_elevator));
-   
-    new Trigger(() -> m_operatorController.getRawButton(13))
-      .whileTrue(new RunCommand(() -> m_intake.pickUpCone(intakeSpeedMultiplier), m_intake).withTimeout(1));
-       
-    
+      .onTrue(new InstantCommand(m_arm::expand));
   }
 
   

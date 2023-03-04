@@ -25,7 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final SparkMaxPIDController m_pidController1;
     private final RelativeEncoder m_encoder1;
     private final RelativeEncoder m_encoder2;
-    public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+    public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, elevatorSpeed;
 
     private List<CANSparkMax> motorList = new ArrayList<>();
   
@@ -54,6 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       kFF = 0; 
       kMaxOutput = 1; 
       kMinOutput = -1;
+      elevatorSpeed = 0;
   
       // set PID coefficients
       m_pidController1.setP(kP);
@@ -74,6 +75,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Min Output", kMinOutput);
       SmartDashboard.putNumber("Set Rotations", 0);
       SmartDashboard.putNumber("elevator setpoint", 0);
+      //SmartDashboard.putNumber("elevator motor power", elevatorSpeed);
     }
 
 
@@ -87,7 +89,6 @@ public class ElevatorSubsystem extends SubsystemBase {
       double ff = SmartDashboard.getNumber("Feed Forward", 0);
       double max = SmartDashboard.getNumber("Max Output", 0);
       double min = SmartDashboard.getNumber("Min Output", 0);
-      // double rotations = MathUtil.clamp(setpoint, -0.1, 0.1);
       double spt = SmartDashboard.getNumber("elevator setpoint", 0);
   
       // if PID coefficients on SmartDashboard have changed, write new values to controller
@@ -103,9 +104,20 @@ public class ElevatorSubsystem extends SubsystemBase {
   
       m_pidController1.setReference(spt, CANSparkMax.ControlType.kPosition);
       
-      SmartDashboard.putNumber("SetPoint", spt);
+      
       SmartDashboard.putNumber("ProcessVariable1", m_encoder1.getPosition());
       SmartDashboard.putNumber("ProcessVariable2", m_encoder2.getPosition());
+    }
+
+    public void simpleMovement(double input) {
+     // input = MathUtil.clamp(SmartDashboard.getNumber("elevator motor power",0), -1, 1);
+     System.out.println("ElevaturSubsytem::simpleMovement");
+      
+      if (input > 0.1) {
+        elevatorMotor1.set(-0.25);
+      } else if (input < -0.1) {
+        elevatorMotor1.set(0.25);
+      }
     }
 
   

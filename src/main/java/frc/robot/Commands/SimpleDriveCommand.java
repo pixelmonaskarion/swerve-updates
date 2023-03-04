@@ -21,7 +21,7 @@ public class SimpleDriveCommand extends CommandBase {
     @Override
     public void execute() {
         if (controller.getLeftTriggerAxis() != 0) {
-            multiplier = 1;
+            multiplier = 2;
         } else if (controller.getRightTriggerAxis() != 0) {
             multiplier = 0.5;
         }
