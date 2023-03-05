@@ -10,8 +10,21 @@ import frc.robot.Constants;
 import frc.robot.Constants.GamePiece;
 
 public class IntakeSubsystem extends SubsystemBase {
+    public static final int CONE_STATE = 0;
+    public static final int CUBE_STATE = 1;
+
     private CANSparkMax intakeMotorInner;
     private CANSparkMax intakeMotorOuter;
+
+    private int state;
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     public IntakeSubsystem() {
         intakeMotorInner = new CANSparkMax(Constants.INTAKE_MOTOR_INNER, MotorType.kBrushless);
@@ -21,20 +34,22 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotorInner.restoreFactoryDefaults();
         intakeMotorOuter.setIdleMode(IdleMode.kBrake);
         intakeMotorOuter.restoreFactoryDefaults();
+
+        state = CUBE_STATE;
     }
 
     public void releaseGamePiece(double speedMultiplier) {
-        if (Constants.curGamePiece == GamePiece.CONE) {
+        if (state == CONE_STATE) {
             releaseCone(speedMultiplier);
-        } else if (Constants.curGamePiece == GamePiece.CUBE) {
+        } else if (state == CUBE_STATE) {
             releaseCube(speedMultiplier);
         }
     }
 
     public void intakeGamePiece(double speedMultiplier) {
-        if (Constants.curGamePiece == GamePiece.CONE) {
+        if (state == CONE_STATE) {
             pickUpCone(speedMultiplier);
-        } else if (Constants.curGamePiece == GamePiece.CUBE) {
+        } else if (state == CUBE_STATE) {
             pickUpCube(speedMultiplier);
         }
     }
