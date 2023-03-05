@@ -95,14 +95,15 @@ public class RobotContainer {
 
     //releases the current game piece when button 1 is pressed
     new Trigger(() -> m_operatorController.getRawButton(1))
-        .whileTrue(new InstantCommand(() -> m_intake.releaseGamePiece(intakeSpeedMultiplier), m_intake));
+        .whileTrue(new InstantCommand(() -> m_intake.releaseGamePiece(0.4), m_intake));
 
     //intakes a game piece when button 2 is pressed
     new Trigger(() -> m_operatorController.getRawButton(2))
-      .whileTrue(new InstantCommand(() -> m_intake.intakeGamePiece(intakeSpeedMultiplier), m_intake));
+      .whileTrue(new InstantCommand(() -> m_intake.intakeGamePiece(0.4), m_intake));
 
-    //stops the intake motors and holds the current piece when button 14 is pressed
-    new Trigger(() -> m_operatorController.getRawButton(14))
+    //new JoystickButton(m_driverController, 2).whileTrue(new InstantCommand(() -> m_intake.intakeGamePiece(intakeSpeedMultiplier), m_intake));
+
+    new Trigger(() -> m_operatorController.getRawButton(8))
       .onTrue(new InstantCommand(() -> m_intake.stopMotors(), m_intake));
 
     //sets the current game pice type to cones when button 4 is pressed
@@ -114,11 +115,11 @@ public class RobotContainer {
       .onTrue(new InstantCommand(() -> m_intake.setState(IntakeGamePiece.CUBE), m_intake));
     
     //fully lowers the arm when button 16 is pressed
-    new Trigger(() -> m_operatorController.getRawButton(16))
+    new Trigger(() -> m_operatorController.getRawButton(9))
       .onTrue(new InstantCommand(m_arm::retract));
        
     //fully raises the arm when button 15 is pressed
-    new Trigger(() -> m_operatorController.getRawButton(15))
+    new Trigger(() -> m_operatorController.getRawButton(10))
       .onTrue(new InstantCommand(m_arm::expand));
   }
 

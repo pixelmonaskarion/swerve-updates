@@ -121,9 +121,10 @@ public class AutoUtils {
 
     //to do: write score command (if for low level, no additional code is needed)
     public Command priorityOneAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
-      return simpleTrajectoryCommand(container, initDriveToScore())
+      return simpleTrajectoryCommand(container, initDrive());
+      //simpleTrajectoryCommand(container, initDriveToScore())
       //  .andThen(new ScoreGamePieceCommand(container.getElevator(), container.getIntake(), container.getController(), location, 1.0))
-        .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
+       // .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
     }
 
     //just do a backup to score and then drive forward if 180 turn still offsets gyro weirdly
@@ -175,6 +176,13 @@ public class AutoUtils {
 
     private Command rotate180(RobotContainer container) {
       return new RunCommand(() -> container.getDrive().mainDrive(0, 0, 1), container.getDrive()).withTimeout(1.64);
+    }
+
+    private Trajectory initDrive() {
+      Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+        new Pose2d(),
+        List.of(new Translation2d(1, 0)), new Pose2d(4, 0, new Rotation2d()), config);
+      return trajectory;
     }
     
     //drive 1 m forward

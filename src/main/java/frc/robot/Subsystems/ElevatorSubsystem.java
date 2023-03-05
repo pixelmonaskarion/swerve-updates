@@ -109,13 +109,14 @@ public class ElevatorSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("ProcessVariable2", m_encoder2.getPosition());
     }
 
+
     public void simpleMovement(double input) {
      // input = MathUtil.clamp(SmartDashboard.getNumber("elevator motor power",0), -1, 1);
       
       if (input > 0.1) {
-        elevatorMotor1.set(-0.25);
+        elevatorMotor1.set(-0.35);
       } else if (input < -0.1) {
-        elevatorMotor1.set(0.25);
+        elevatorMotor1.set(0.35);
       } else {
         elevatorMotor1.set(0);
       }
