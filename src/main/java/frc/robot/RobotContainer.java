@@ -7,15 +7,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.VisionTurnCommand;
-import frc.robot.Constants.GamePiece;
+import frc.robot.Constants.IntakeGamePiece;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Commands.ArmTest;
-import frc.robot.Commands.ElevatorCommand;
-import frc.robot.Commands.IntakeCommand;
-import frc.robot.Commands.IntakeCommand;
-import frc.robot.Commands.ScoreGamePieceCommand;
 import frc.robot.Commands.SimpleDriveCommand;
-import frc.robot.Commands.ToStartConfigCommand;
 import frc.robot.Commands.VisionTranslateCommand;
 import frc.robot.PathPlanningCode.AutoUtils;
 import frc.robot.Subsystems.ArmSubsystem;
@@ -112,11 +106,11 @@ public class RobotContainer {
 
     //sets the current game pice type to cones when button 4 is pressed
     new Trigger(() -> m_operatorController.getRawButton(4))
-      .onTrue(new InstantCommand(() -> m_intake.setState(IntakeSubsystem.CONE_STATE), m_intake));
+      .onTrue(new InstantCommand(() -> m_intake.setState(IntakeGamePiece.CONE), m_intake));
 
     //sets the current game piece type to cubes when button 3 is pressed
     new Trigger(() -> m_operatorController.getRawButton(3))
-      .onTrue(new InstantCommand(() -> m_intake.setState(IntakeSubsystem.CUBE_STATE), m_intake));
+      .onTrue(new InstantCommand(() -> m_intake.setState(IntakeGamePiece.CUBE), m_intake));
     
     //fully lowers the arm when button 16 is pressed
     new Trigger(() -> m_operatorController.getRawButton(16))

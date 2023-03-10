@@ -173,10 +173,9 @@ public final class Constants {
   public static final int SOLENOID_forward1 = 0;
   public static final int SOLENOID_reverse1 = 1;
 
-  public static GamePiece curGamePiece = GamePiece.CUBE;
-
-  public enum GamePiece {
-    CONE, CUBE
+  public enum IntakeGamePiece {
+    CUBE,
+    CONE,
   }
 
   public enum ScoringLocation { 

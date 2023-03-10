@@ -2,7 +2,7 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Constants.GamePiece;
+import frc.robot.Constants.IntakeGamePiece;
 import frc.robot.Subsystems.IntakeSubsystem;
 
 public class IntakeCommand extends CommandBase {
@@ -22,9 +22,9 @@ public class IntakeCommand extends CommandBase {
     @Override
     public void execute() {
         System.out.println("IntakeCommand::execute");
-        if (Constants.curGamePiece == GamePiece.CONE) {
+        if (intake.getState() == IntakeGamePiece.CONE) {
             intake.pickUpCone(intakeSpeedMultiplier);
-        } else if (Constants.curGamePiece == GamePiece.CUBE) {
+        } else if (intake.getState() == IntakeGamePiece.CUBE) {
             intake.pickUpCube(intakeSpeedMultiplier);
         }
     }

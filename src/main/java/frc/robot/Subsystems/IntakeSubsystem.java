@@ -7,23 +7,27 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.GamePiece;
+import frc.robot.Constants.IntakeGamePiece;
 
 public class IntakeSubsystem extends SubsystemBase {
-    public static final int CONE_STATE = 0;
-    public static final int CUBE_STATE = 1;
-
     private CANSparkMax intakeMotorInner;
     private CANSparkMax intakeMotorOuter;
 
-    private int state;
+    private IntakeGamePiece state;
 
-    public int getState() {
+    public IntakeGamePiece getState() {
         return state;
     }
 
-    public void setState(int state) {
+    public void setState(IntakeGamePiece state) {
         this.state = state;
+        if (state == IntakeGamePiece.CUBE) {
+            SmartDashboard.putBoolean("GamePiece/ConeMode", false);
+            SmartDashboard.putBoolean("GamePiece/CubeMode", true);
+        } else {
+            SmartDashboard.putBoolean("GamePiece/ConeMode", true);
+            SmartDashboard.putBoolean("GamePiece/CubeMode", false);
+        }
     }
 
     public IntakeSubsystem() {
@@ -35,21 +39,21 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotorOuter.setIdleMode(IdleMode.kBrake);
         intakeMotorOuter.restoreFactoryDefaults();
 
-        state = CUBE_STATE;
+        state = IntakeGamePiece.CUBE;
     }
 
     public void releaseGamePiece(double speedMultiplier) {
-        if (state == CONE_STATE) {
+        if (state == IntakeGamePiece.CONE) {
             releaseCone(speedMultiplier);
-        } else if (state == CUBE_STATE) {
+        } else if (state == IntakeGamePiece.CUBE) {
             releaseCube(speedMultiplier);
         }
     }
 
     public void intakeGamePiece(double speedMultiplier) {
-        if (state == CONE_STATE) {
+        if (state == IntakeGamePiece.CONE) {
             pickUpCone(speedMultiplier);
-        } else if (state == CUBE_STATE) {
+        } else if (state == IntakeGamePiece.CUBE) {
             pickUpCube(speedMultiplier);
         }
     }

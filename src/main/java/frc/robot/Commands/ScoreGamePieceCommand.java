@@ -3,8 +3,7 @@ package frc.robot.Commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.Constants.GamePiece;
+import frc.robot.Constants.IntakeGamePiece;
 import frc.robot.Constants.ScoringLocation;
 import frc.robot.Subsystems.ElevatorSubsystem;
 import frc.robot.Subsystems.IntakeSubsystem;
@@ -54,12 +53,10 @@ public class ScoreGamePieceCommand extends CommandBase {
         elevator.moveElevator(elevatorSetpoint);
 
         if (timer.get() > 4) {
-            if (Constants.curGamePiece == GamePiece.CONE) {
+            if (intake.getState() == IntakeGamePiece.CONE) {
                 intake.releaseCone(intakeSpeedMultiplier);
-                Constants.curGamePiece = null;
-            } else if (Constants.curGamePiece == GamePiece.CUBE) {
+            } else { //CUBE
                 intake.releaseCube(intakeSpeedMultiplier);
-                Constants.curGamePiece = null;
             }
         }
     }
