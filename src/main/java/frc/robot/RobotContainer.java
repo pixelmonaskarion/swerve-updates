@@ -9,6 +9,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.VisionTurnCommand;
 import frc.robot.Constants.IntakeGamePiece;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Commands.ArmTest;
+import frc.robot.Commands.ElevatorCommand;
+import frc.robot.Commands.IntakeCommand;
+import frc.robot.Commands.ReleaseCommand;
+import frc.robot.Commands.IntakeCommand;
+import frc.robot.Commands.ScoreGamePieceCommand;
 import frc.robot.Commands.SimpleDriveCommand;
 import frc.robot.Commands.VisionTranslateCommand;
 import frc.robot.PathPlanningCode.AutoUtils;
@@ -76,7 +82,7 @@ public class RobotContainer {
         new RunCommand(
           () -> m_elevator.simpleMovement(
             m_operatorController.getRawAxis(1)), m_elevator));
-
+  
     
 
   }
@@ -95,11 +101,11 @@ public class RobotContainer {
 
     //releases the current game piece when button 1 is pressed
     new Trigger(() -> m_operatorController.getRawButton(1))
-        .whileTrue(new InstantCommand(() -> m_intake.releaseGamePiece(0.4), m_intake));
+        .whileTrue(new ReleaseCommand(m_intake, intakeSpeedMultiplier));
 
     //intakes a game piece when button 2 is pressed
     new Trigger(() -> m_operatorController.getRawButton(2))
-      .whileTrue(new InstantCommand(() -> m_intake.intakeGamePiece(0.4), m_intake));
+      .whileTrue(new IntakeCommand(m_intake, intakeSpeedMultiplier));
 
     //new JoystickButton(m_driverController, 2).whileTrue(new InstantCommand(() -> m_intake.intakeGamePiece(intakeSpeedMultiplier), m_intake));
 
@@ -114,11 +120,9 @@ public class RobotContainer {
     new Trigger(() -> m_operatorController.getRawButton(3))
       .onTrue(new InstantCommand(() -> m_intake.setState(IntakeGamePiece.CUBE), m_intake));
     
-    //fully lowers the arm when button 16 is pressed
     new Trigger(() -> m_operatorController.getRawButton(9))
       .onTrue(new InstantCommand(m_arm::retract));
        
-    //fully raises the arm when button 15 is pressed
     new Trigger(() -> m_operatorController.getRawButton(10))
       .onTrue(new InstantCommand(m_arm::expand));
   }

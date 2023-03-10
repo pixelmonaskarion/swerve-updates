@@ -45,7 +45,6 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    m_robotContainer.getController().getRawButtonPressed(3);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -54,9 +53,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    if (m_robotContainer.getController().getRawButton(3)) {
-      SmartDashboard.putBoolean("GamePiece/CubeMode", true);
-    }
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

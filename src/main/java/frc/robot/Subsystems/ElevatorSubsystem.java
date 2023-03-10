@@ -112,28 +112,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void simpleMovement(double input) {
      // input = MathUtil.clamp(SmartDashboard.getNumber("elevator motor power",0), -1, 1);
-      
-      if (input > 0.1) {
-        elevatorMotor1.set(-0.35);
-      } else if (input < -0.1) {
-        elevatorMotor1.set(0.35);
+      System.out.println("joystick axis 1 at " + input);
+      if (input > 0.25) {
+        elevatorMotor1.set(-0.25);
+      } else if (input < -0.25) {
+        elevatorMotor1.set(0.25);
       } else {
         elevatorMotor1.set(0);
       }
     }
 
-  
-    public void movementTest(boolean extend, boolean retract) {
-      if (extend) {
-        elevatorMotor1.set(0.8);
-        elevatorMotor2.set(-0.8);
-      }
-
-        if (retract) {
-        elevatorMotor1.set(-0.8);
-        elevatorMotor2.set(0.8);
-      }
-    }
 
     
   

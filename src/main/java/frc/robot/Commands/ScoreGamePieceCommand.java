@@ -53,11 +53,7 @@ public class ScoreGamePieceCommand extends CommandBase {
         elevator.moveElevator(elevatorSetpoint);
 
         if (timer.get() > 4) {
-            if (intake.getState() == IntakeGamePiece.CONE) {
-                intake.releaseCone(intakeSpeedMultiplier);
-            } else { //CUBE
-                intake.releaseCube(intakeSpeedMultiplier);
-            }
+            intake.intakeGamePiece(intakeSpeedMultiplier);
         }
     }
 

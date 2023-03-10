@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeGamePiece;
-
+    
 public class IntakeSubsystem extends SubsystemBase {
     private CANSparkMax intakeMotorInner;
     private CANSparkMax intakeMotorOuter;
@@ -59,23 +59,27 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void pickUpCone(double speedMultiplier) {
-        intakeMotorInner.set(-speedMultiplier);
-        intakeMotorOuter.set(-speedMultiplier);
+        // TODO: tune motor speeds
+        intakeMotorInner.set(-0.4);
+        intakeMotorOuter.set(-0.4);
     }
 
     public void releaseCone(double speedMultiplier) {
-        intakeMotorInner.set(speedMultiplier);
-        intakeMotorOuter.set(speedMultiplier);
+        // TODO:tune motor speeds
+        intakeMotorInner.set(0.4);
+        intakeMotorOuter.set(0.4);
     }
 
     public void pickUpCube(double speedMultiplier) {
-        intakeMotorInner.set(speedMultiplier);
-        intakeMotorOuter.set(-speedMultiplier);
+        // TODO:tune motor speeds
+        intakeMotorInner.set(0.4);
+        intakeMotorOuter.set(-0.4);
     }
 
     public void releaseCube(double speedMultiplier) {
-        intakeMotorInner.set(-speedMultiplier);
-        intakeMotorOuter.set(speedMultiplier);
+        // TODO:tune motor speeds
+        intakeMotorInner.set(-0.4);
+        intakeMotorOuter.set(0.4);
     }
 
     public void stopMotors() {
