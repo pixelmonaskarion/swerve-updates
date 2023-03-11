@@ -130,6 +130,9 @@ public final class Constants {
     public static final double kDirectionSlewRate = 1.2; // radians per second
     public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+
+    //button bindings
+    public static final int INTAKE_SPEED_AXIS = 3;
   }
 
   public static final class AutoConstants {
