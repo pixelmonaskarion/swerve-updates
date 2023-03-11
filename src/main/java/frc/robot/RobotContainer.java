@@ -2,19 +2,14 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.VisionTurnCommand;
 import frc.robot.Constants.IntakeGamePiece;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Commands.ArmTest;
-import frc.robot.Commands.ElevatorCommand;
 import frc.robot.Commands.IntakeCommand;
 import frc.robot.Commands.ReleaseCommand;
-import frc.robot.Commands.IntakeCommand;
-import frc.robot.Commands.ScoreGamePieceCommand;
 import frc.robot.Commands.SimpleDriveCommand;
 import frc.robot.Commands.VisionTranslateCommand;
 import frc.robot.PathPlanningCode.AutoUtils;
@@ -25,7 +20,6 @@ import frc.robot.Subsystems.IntakeSubsystem;
 import frc.robot.Subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
@@ -43,8 +37,6 @@ public class RobotContainer {
   private final ArmSubsystem m_arm;
   private final IntakeSubsystem m_intake;
 
-  private double intakeSpeedMultiplier;
-
   private final AutoUtils autoUtils = new AutoUtils();
 
   // The driver's controller
@@ -61,8 +53,6 @@ public class RobotContainer {
     m_elevator = new ElevatorSubsystem();
     m_arm = new ArmSubsystem();
     m_intake = new IntakeSubsystem();
-
-    intakeSpeedMultiplier = wAxisSpeedMultiplier();
 
     configureButtonBindings();
     // Configure default commands
@@ -82,9 +72,6 @@ public class RobotContainer {
         new RunCommand(
           () -> m_elevator.simpleMovement(
             m_operatorController.getRawAxis(1)), m_elevator));
-  
-    
-
   }
 
 
@@ -99,17 +86,14 @@ public class RobotContainer {
     new Trigger(() -> triggerPressed())
       .whileTrue(new SimpleDriveCommand(m_robotDrive, m_driverController));
 
-    //releases the current game piece when button 1 is pressed
     new Trigger(() -> m_operatorController.getRawButton(1))
-        .whileTrue(new ReleaseCommand(m_intake, intakeSpeedMultiplier));
+      .whileTrue(new ReleaseCommand(m_intake, m_intake.getWAxisSpeedMultiplier(OIConstants.INTAKE_SPEED_AXIS)));
 
-    //intakes a game piece when button 2 is pressed
     new Trigger(() -> m_operatorController.getRawButton(2))
-      .whileTrue(new IntakeCommand(m_intake, intakeSpeedMultiplier));
+      .whileTrue(new IntakeCommand(m_intake, m_intake.getWAxisSpeedMultiplier(OIConstants.INTAKE_SPEED_AXIS)));
 
-    //new JoystickButton(m_driverController, 2).whileTrue(new InstantCommand(() -> m_intake.intakeGamePiece(intakeSpeedMultiplier), m_intake));
-
-    new Trigger(() -> m_operatorController.getRawButton(8))
+    //stops the intake motors and holds the current piece when button 14 is pressed
+    new Trigger(() -> m_operatorController.getRawButton(14))
       .onTrue(new InstantCommand(() -> m_intake.stopMotors(), m_intake));
 
     //sets the current game pice type to cones when button 4 is pressed
@@ -120,18 +104,15 @@ public class RobotContainer {
     new Trigger(() -> m_operatorController.getRawButton(3))
       .onTrue(new InstantCommand(() -> m_intake.setState(IntakeGamePiece.CUBE), m_intake));
     
-    new Trigger(() -> m_operatorController.getRawButton(9))
+    //fully lowers the arm when button 16 is pressed
+    new Trigger(() -> m_operatorController.getRawButton(16))
       .onTrue(new InstantCommand(m_arm::retract));
        
-    new Trigger(() -> m_operatorController.getRawButton(10))
+    //fully raises the arm when button 15 is pressed
+    new Trigger(() -> m_operatorController.getRawButton(15))
       .onTrue(new InstantCommand(m_arm::expand));
   }
 
-  
-  public double wAxisSpeedMultiplier() {
-    double mult = (m_operatorController.getRawAxis(3) + 1)/2;
-    return MathUtil.clamp(Math.log(10*mult), 0.1, 1);
-  }
 
   public boolean triggerPressed() {
     if (m_driverController.getLeftTriggerAxis() != 0 || m_driverController.getRightTriggerAxis() != 0) {

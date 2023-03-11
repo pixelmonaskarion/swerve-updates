@@ -18,14 +18,10 @@ public class ElevatorCommand extends CommandBase {
 
     @Override
     public void execute() {
-        elevator.moveElevator(setpoint);
     }
 
     
     @Override
     public void end(boolean interrupted) {
-        for (CANSparkMax motor : elevator.getElevatorMotors()) {
-            motor.set(0.05);
-        }
     }
 }

@@ -1,7 +1,12 @@
 
 package frc.robot.PathPlanningCode;
 
+import java.util.HashMap;
 import java.util.List;
+
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -14,7 +19,9 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.RobotContainer;
 import frc.robot.Commands.ChargeStationBalanceCommand;
@@ -26,7 +33,6 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ScoringLocation;
 
- //trajectory -- command:
     /*
      * priority 1 auto:
      * go forward a bit -- score gamepiece command (arm up, elevator extended)
@@ -114,6 +120,30 @@ public class AutoUtils {
       return swerveControllerCommand.andThen(() -> container.getDrive().mainDrive(0, 0, 0));
     }
 
+    
+    public Command followTrajectoryCommand(RobotContainer container, PathPlannerTrajectory traj, boolean isFirstPath) {
+      return new SequentialCommandGroup(
+           new InstantCommand(() -> {
+             if(isFirstPath){
+                container.getDrive().resetOdometry(traj.getInitialHolonomicPose());
+             }
+           }),
+           new PPSwerveControllerCommand(
+               traj, 
+               container.getDrive()::getPose, 
+               DriveConstants.kDriveKinematics, 
+               new PIDController(0, 0, 0), // X controller
+               new PIDController(0, 0, 0), // Y controller
+               new PIDController(0, 0, 0), // Rotation controller
+               container.getDrive()::setModuleStates, // Module states consumer
+               true, // Should the path be automatically mirrored depending on alliance color. 
+               container.getDrive()
+           )
+       );
+   }
+
+ 
+
     public Command trajectoryAutoAlign(RobotContainer container, Trajectory trajectory) {
       return simpleTrajectoryCommand(container, trajectory)
         .andThen(new VisionTurnCommand(container.getVision(), container.getDrive(), container.getController()));
@@ -122,9 +152,6 @@ public class AutoUtils {
     //to do: write score command (if for low level, no additional code is needed)
     public Command priorityOneAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
       return simpleTrajectoryCommand(container, initDrive());
-      //simpleTrajectoryCommand(container, initDriveToScore())
-      //  .andThen(new ScoreGamePieceCommand(container.getElevator(), container.getIntake(), container.getController(), location, 1.0))
-       // .andThen(simpleTrajectoryCommand(container, driveOutOfCommunity(startPos)));
     }
 
     //just do a backup to score and then drive forward if 180 turn still offsets gyro weirdly
@@ -142,7 +169,7 @@ public class AutoUtils {
         .andThen(new IntakeCommand(container.getIntake(), 1.0))
         .andThen(rotate180(container))
           .deadlineWith(new VisionTranslateCommand(container.getVision(), container.getDrive(), container.getController()))
-        .andThen(new ScoreGamePieceCommand(container.getElevator(), container.getIntake(), container.getController(), location, 1.0));
+        .andThen(new ScoreGamePieceCommand(container.getElevator(), container.getIntake()));
     }
 
     public Command priorityFourAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
@@ -319,10 +346,18 @@ public class AutoUtils {
     
 
   private enum AutoModes {
-    SIMPLE_DRIVE, SIMPLE_TRAJECTORY, AUTO_ALIGN_TRAJECTORY, PRIORITY_1_AUTO, PRIORITY_2_AUTO, PRIORITY_3_AUTO, PRIORITY_4_AUTO
+    SIMPLE_DRIVE,
+    SIMPLE_TRAJECTORY,
+    AUTO_ALIGN_TRAJECTORY, 
+    PRIORITY_1_AUTO,
+    PRIORITY_2_AUTO,
+    PRIORITY_3_AUTO,
+    PRIORITY_4_AUTO
   }
 
   private enum StartPos {
-    LEFT_CS, MID_CS, RIGHT_CS
+    LEFT_CS,
+    MID_CS,
+    RIGHT_CS
   }
 }

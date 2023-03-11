@@ -21,12 +21,10 @@ public class ToStartConfigCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        CommandScheduler.getInstance().schedule(new InstantCommand(arm::retract));
     }
 
 
     @Override
     public void execute() {
-        CommandScheduler.getInstance().schedule(new ElevatorCommand(elevator, 0));
     }
 }

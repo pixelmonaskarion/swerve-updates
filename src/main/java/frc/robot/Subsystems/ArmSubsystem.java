@@ -25,10 +25,4 @@ public class ArmSubsystem extends SubsystemBase {
     public void retract() {
             sol.set(Value.kReverse);
     }
-
-
-    public void turnOff() {
-            sol.set(Value.kOff);
-    }
-
 }

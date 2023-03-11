@@ -1,23 +1,21 @@
+
 package frc.robot.Subsystems;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
 
-//to do: error handling for if pid controllers get misaligned
+//TO DO: error handling for if pid controllers get misaligned
 public class ElevatorSubsystem extends SubsystemBase {
     private final CANSparkMax elevatorMotor1;
     private final CANSparkMax elevatorMotor2;
@@ -37,8 +35,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       elevatorMotor1.setIdleMode(IdleMode.kBrake);
       elevatorMotor1.restoreFactoryDefaults();
-      //elevatorMotor1.setSoftLimit(SoftLimitDirection.kForward, 51);
-      //elevatorMotor1.setSoftLimit(SoftLimitDirection.kReverse, 51);
       elevatorMotor1.setInverted(true);
       elevatorMotor2.follow(elevatorMotor1, true);
       motorList.add(elevatorMotor1);
@@ -111,8 +107,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 
     public void simpleMovement(double input) {
-     // input = MathUtil.clamp(SmartDashboard.getNumber("elevator motor power",0), -1, 1);
-      System.out.println("joystick axis 1 at " + input);
       if (input > 0.25) {
         elevatorMotor1.set(-0.25);
       } else if (input < -0.25) {
@@ -120,13 +114,6 @@ public class ElevatorSubsystem extends SubsystemBase {
       } else {
         elevatorMotor1.set(0);
       }
-    }
-
-
-    
-  
-    public List<CANSparkMax> getElevatorMotors() {
-      return motorList;
     }
   
 }

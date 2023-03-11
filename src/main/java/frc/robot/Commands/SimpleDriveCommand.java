@@ -3,6 +3,8 @@ package frc.robot.Commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Subsystems.DriveSubsystem;
 
 public class SimpleDriveCommand extends CommandBase {
@@ -28,10 +30,10 @@ public class SimpleDriveCommand extends CommandBase {
   
 
         drive.drive(
-            MathUtil.applyDeadband(-multiplier*controller.getLeftY(), 0.06),
-            MathUtil.applyDeadband(-multiplier*controller.getLeftX(), 0.06),
-            MathUtil.applyDeadband(-multiplier*controller.getRightX(), 0.06),
-            MathUtil.applyDeadband(-multiplier*controller.getRightY(), 0.06),
+            MathUtil.applyDeadband(-multiplier*controller.getLeftY(), DriveConstants.DRIVE_DEADBAND),
+            MathUtil.applyDeadband(-multiplier*controller.getLeftX(), DriveConstants.DRIVE_DEADBAND),
+            MathUtil.applyDeadband(-multiplier*controller.getRightX(), DriveConstants.DRIVE_DEADBAND),
+            MathUtil.applyDeadband(-multiplier*controller.getRightY(), DriveConstants.DRIVE_DEADBAND),
             controller.getRightBumper(), controller.getAButton()); 
     }
     

@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -40,6 +41,11 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeMotorOuter.restoreFactoryDefaults();
 
         state = IntakeGamePiece.CUBE;
+    }
+
+    public double getWAxisSpeedMultiplier(double axisValue) {
+        double mult = (axisValue + 1)/2;
+        return MathUtil.clamp(Math.log(mult*10), 0.1, 0.8);
     }
 
     public void releaseGamePiece(double speedMultiplier) {

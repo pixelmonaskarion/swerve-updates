@@ -8,7 +8,7 @@ public class ReleaseCommand extends CommandBase {
     private double intakeSpeedMultiplier;
 
     
-    //arm down, turn on intake
+    //release cone or cube
     public ReleaseCommand(IntakeSubsystem intake, double intakeSpeedMultiplier) {
         this.intake = intake;
         this.intakeSpeedMultiplier = intakeSpeedMultiplier;
@@ -16,13 +16,10 @@ public class ReleaseCommand extends CommandBase {
         addRequirements(intake);
     }
 
-
     @Override
     public void initialize() {
-        System.out.println("IntakeCommand::execute");
         intake.releaseGamePiece(intakeSpeedMultiplier);
     }
-
 
     @Override
     public void end(boolean interrupted) {

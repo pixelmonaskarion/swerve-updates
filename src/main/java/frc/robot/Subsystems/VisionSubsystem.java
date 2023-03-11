@@ -82,9 +82,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     public PhotonTrackedTarget getTargetWithID(int id) { 
         List<PhotonTrackedTarget> targets = result.getTargets(); 
-        for (PhotonTrackedTarget i : targets) {
-            if (i.getFiducialId() == id) {
-                return i; 
+        for (PhotonTrackedTarget target : targets) {
+            if (target.getFiducialId() == id) {
+                return target; 
             }
         }
         return null; 

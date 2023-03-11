@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Launch Main",
+      "request": "launch",
+      "mainClass": "frc.robot.Main",
+      "projectName": "2023_season_current_code"
+    },
+    {
+      "type": "java",
       "name": "Launch GenericPath",
       "request": "launch",
       "mainClass": "frc.robot.GenericPID.GenericPath",

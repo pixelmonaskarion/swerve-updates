@@ -24,12 +24,15 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedBase = 2;
-    public static final double kMaxSpeedScaleFactor = 2.5;
+
+    public static final double DRIVE_DEADBAND = 0.06;
+    //4.45 m/s max speed 
+    public static final double kMaxSpeedBase = 4.45;
+    public static final double kMaxSpeedScaleFactor = 0.7;
     public static final double kMaxSpeedMetersPerSecond = kMaxSpeedBase*kMaxSpeedScaleFactor;
 
     public static final double kMaxAngularSpeedBase = Math.PI;
-    public static final double kMaxAngularSpeedScaleFactor = 1.0;
+    public static final double kMaxAngularSpeedScaleFactor = 0.7;
     public static final double kMaxAngularSpeed = kMaxAngularSpeedBase*kMaxAngularSpeedScaleFactor; // radians per second
 
     // Chassis configuration
@@ -147,6 +150,7 @@ public final class Constants {
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
 
+  //TO DO: check these are the correct values (meters)
   public static final double CAMERA_HEIGHT = 0.15;
   public static final double TARGET_HEIGHT = 0.48;
   public static final double CAMERA_PITCH_RADIANS = 0;
@@ -156,7 +160,6 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
-  //to do: change to actual ports
   public static final int ELEVATOR_MOTOR_ID_MASTER = 17;
   public static final int ELEVATOR_MOTOR_ID_SLAVE = 16;
   public static final int INTAKE_MOTOR_INNER = 12;
@@ -173,12 +176,17 @@ public final class Constants {
   public static final int SOLENOID_forward1 = 0;
   public static final int SOLENOID_reverse1 = 1;
 
+
   public enum IntakeGamePiece {
     CUBE,
     CONE,
   }
 
   public enum ScoringLocation { 
-    LOW, MID, MIDHIGH, HIGH, SUBSTATION
+    LOW, 
+    MID, 
+    MIDHIGH, 
+    HIGH, 
+    SUBSTATION
   }
 }

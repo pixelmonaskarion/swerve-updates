@@ -19,7 +19,7 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import frc.robot.Constants;
 import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.utils.SwerveUtils;
@@ -146,7 +146,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @param centerGyro    whether to center the gyro to the direction the robot is currently facing
    */
 
-  //start of some team drive code
   public void drive(double xSpeed, double ySpeed, double xRot, double yRot, boolean altDrive, boolean centerGyro) {
     if(centerGyro) zeroHeading();
     if(altDrive) {
@@ -181,7 +180,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   private void move(double xSpeed, double ySpeed, double rot, boolean rateLimit) {
 
-    //slew rate fetched code
     double xSpeedCommanded;
     double ySpeedCommanded;
 
@@ -231,7 +229,7 @@ public class DriveSubsystem extends SubsystemBase {
       ySpeedCommanded = ySpeed;
       currentRotation = rot;
     }
-    //end of fetched code 
+
     // Adjust input based on max speed
     double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
@@ -320,11 +318,11 @@ public class DriveSubsystem extends SubsystemBase {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
-  /*@Override
+  @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addDoubleProperty("Magnitude Commanded",  () -> magCommanded, null);
+    //builder.addDoubleProperty("Magnitude Commanded",  () -> magCommanded, null);
     //builder.addBooleanProperty("At Setpoint", () -> atSetpoint(), null);
     //addChild("Controller", m_controller);
-  }*/
+  }
 }
