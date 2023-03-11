@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.VisionTurnCommand;
 import frc.robot.Constants.IntakeGamePiece;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.ElevatorSetpoints;
 import frc.robot.Commands.IntakeCommand;
+import frc.robot.Commands.ElevatorCommand;
 import frc.robot.Commands.ReleaseCommand;
 import frc.robot.Commands.SimpleDriveCommand;
 import frc.robot.Commands.VisionTranslateCommand;
@@ -86,31 +88,43 @@ public class RobotContainer {
     new Trigger(() -> triggerPressed())
       .whileTrue(new SimpleDriveCommand(m_robotDrive, m_driverController));
 
-    new Trigger(() -> m_operatorController.getRawButton(1))
+    new Trigger(() -> m_operatorController.getRawButton(Bindings.releaseGamePieceButtonMapping))
       .whileTrue(new ReleaseCommand(m_intake, m_intake.getWAxisSpeedMultiplier(OIConstants.INTAKE_SPEED_AXIS)));
 
-    new Trigger(() -> m_operatorController.getRawButton(2))
+    new Trigger(() -> m_operatorController.getRawButton(Bindings.intakeGamePieceButtonMapping))
       .whileTrue(new IntakeCommand(m_intake, m_intake.getWAxisSpeedMultiplier(OIConstants.INTAKE_SPEED_AXIS)));
 
     //stops the intake motors and holds the current piece when button 14 is pressed
-    new Trigger(() -> m_operatorController.getRawButton(14))
+    new Trigger(() -> m_operatorController.getRawButton(Bindings.holdGamePieceButtonMapping))
       .onTrue(new InstantCommand(() -> m_intake.stopMotors(), m_intake));
 
     //sets the current game pice type to cones when button 4 is pressed
-    new Trigger(() -> m_operatorController.getRawButton(4))
+    new Trigger(() -> m_operatorController.getRawButton(Bindings.setIntakeTypeConesButtonMapping))
       .onTrue(new InstantCommand(() -> m_intake.setState(IntakeGamePiece.CONE), m_intake));
 
     //sets the current game piece type to cubes when button 3 is pressed
-    new Trigger(() -> m_operatorController.getRawButton(3))
+    new Trigger(() -> m_operatorController.getRawButton(Bindings.setIntakeTypeCubesButtonmapping))
       .onTrue(new InstantCommand(() -> m_intake.setState(IntakeGamePiece.CUBE), m_intake));
     
     //fully lowers the arm when button 16 is pressed
-    new Trigger(() -> m_operatorController.getRawButton(16))
+    new Trigger(() -> m_operatorController.getRawButton(Bindings.fullyLowerArmButtonMapping))
       .onTrue(new InstantCommand(m_arm::retract));
        
     //fully raises the arm when button 15 is pressed
-    new Trigger(() -> m_operatorController.getRawButton(15))
+    new Trigger(() -> m_operatorController.getRawButton(Bindings.fullyRaiseArmButtonMapping))
       .onTrue(new InstantCommand(m_arm::expand));
+
+    //set elevator position to level 1
+    new Trigger(() -> m_operatorController.getRawButton(Bindings.setElevatorLevel1ButtonMapping))
+      .onTrue(new ElevatorCommand(m_elevator, ElevatorSetpoints.setpointLevel1));
+
+    //set elevator position to level 2
+    new Trigger(() -> m_operatorController.getRawButton(Bindings.setElevatorLevel2ButtonMapping))
+      .onTrue(new ElevatorCommand(m_elevator, ElevatorSetpoints.setpointLevel2));
+
+    //set elevator position to level 3
+    new Trigger(() -> m_operatorController.getRawButton(Bindings.setElevatorLevel3ButtonMapping))
+      .onTrue(new ElevatorCommand(m_elevator, ElevatorSetpoints.setpointLevel3));
   }
 
 
