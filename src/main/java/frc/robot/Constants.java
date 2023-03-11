@@ -153,10 +153,27 @@ public final class Constants {
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
 
-  public static final class ElevatorSetpoints {
-    public static final double setpointLevel1 =;
-    public static final double setpointLevel2 =;
-    public static final double setpointLevel3 =;
+  public static final class ElevatorConstants {
+    public static final int ELEVATOR_MOTOR_ID_MASTER = 17;
+    public static final int ELEVATOR_MOTOR_ID_SLAVE = 16;
+
+    public static final double level1 = 0.1;
+    public static final double level2 = 0.35;
+    public static final double level3 = 0.9;
+    public static final double doubleSubstation = 0.7;
+
+    public static final double upSpeed = 0.01;
+    public static final double downSpeed = -0.01;
+    
+    public static final double elevatorDeadband = 0.25;
+    //TO DO: adjust elevator distance sensor constants
+    public static final double DISTANCE_SENSOR_OFFSET = 0.05; //meters
+    public static final double MAX_EXTENSION = 1; //meters
+
+    public static final double ELEVATOR_kS = 0.2;
+    public static final double ELEVATOR_kA = 0.09;
+    public static final double ELEVATOR_kV = 6.14;
+    public static final double ELEVATOR_kG = 0.68;
   }
 
   //TO DO: check these are the correct values (meters)
@@ -169,16 +186,9 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
-  public static final int ELEVATOR_MOTOR_ID_MASTER = 17;
-  public static final int ELEVATOR_MOTOR_ID_SLAVE = 16;
   public static final int INTAKE_MOTOR_INNER = 12;
   public static final int INTAKE_MOTOR_OUTER = 13;
 
-
-  public static final double ELEVATOR_kS = 0.2;
-  public static final double ELEVATOR_kA = 0.09;
-  public static final double ELEVATOR_kV = 6.14;
-  public static final double ELEVATOR_kG = 0.68;
 
 
   //solenoid ports on PCM

@@ -1,8 +1,7 @@
 package frc.robot.Commands;
 
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Subsystems.ElevatorSubsystem;
 
 public class ElevatorCommand extends CommandBase {
@@ -17,11 +16,21 @@ public class ElevatorCommand extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        elevator.setCurSetpoint(setpoint);
+    }
+
+    @Override
     public void execute() {
+        elevator.distSensorMove(setpoint);
     }
 
     
     @Override
-    public void end(boolean interrupted) {
+    public boolean isFinished() {
+        if (elevator.getController().atSetpoint() || elevator.getCurPosition() == ElevatorConstants.MAX_EXTENSION) {
+            return true;
+        }
+        return false;
     }
 }
