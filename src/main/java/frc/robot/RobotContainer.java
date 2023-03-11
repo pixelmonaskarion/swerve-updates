@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Commands.VisionTurnCommand;
 import frc.robot.Constants.IntakeGamePiece;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.ElevatorSetpoints;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Commands.IntakeCommand;
 import frc.robot.Commands.ElevatorCommand;
 import frc.robot.Commands.ReleaseCommand;
@@ -73,7 +73,7 @@ public class RobotContainer {
     m_elevator.setDefaultCommand(
         new RunCommand(
           () -> m_elevator.simpleMovement(
-            m_operatorController.getRawAxis(1)), m_elevator));
+            MathUtil.applyDeadband(m_operatorController.getRawAxis(1), ElevatorConstants.elevatorDeadband), m_elevator));
   }
 
 
@@ -116,15 +116,15 @@ public class RobotContainer {
 
     //set elevator position to level 1
     new Trigger(() -> m_operatorController.getRawButton(Bindings.setElevatorLevel1ButtonMapping))
-      .onTrue(new ElevatorCommand(m_elevator, ElevatorSetpoints.setpointLevel1));
+      .onTrue(new ElevatorCommand(m_elevator, ElevatorConstants.setpointLevel1));
 
     //set elevator position to level 2
     new Trigger(() -> m_operatorController.getRawButton(Bindings.setElevatorLevel2ButtonMapping))
-      .onTrue(new ElevatorCommand(m_elevator, ElevatorSetpoints.setpointLevel2));
+      .onTrue(new ElevatorCommand(m_elevator, ElevatorConstants.setpointLevel2));
 
     //set elevator position to level 3
     new Trigger(() -> m_operatorController.getRawButton(Bindings.setElevatorLevel3ButtonMapping))
-      .onTrue(new ElevatorCommand(m_elevator, ElevatorSetpoints.setpointLevel3));
+      .onTrue(new ElevatorCommand(m_elevator, ElevatorConstants.setpointLevel3));
   }
 
 
