@@ -1,45 +1,51 @@
 
 package frc.robot.Subsystems;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Ultrasonic;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants;
+
 import frc.robot.Constants.ElevatorConstants;
 
 //TO DO: error handling for if pid controllers get misaligned
 public class ElevatorSubsystem extends SubsystemBase {
     private final CANSparkMax elevatorMotor1;
     private final CANSparkMax elevatorMotor2;
+    private Ultrasonic distSensor;
    
     private final SparkMaxPIDController m_pidController1;
     private final RelativeEncoder m_encoder1;
     private final RelativeEncoder m_encoder2;
     public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, elevatorSpeed;
-
-    private List<CANSparkMax> motorList = new ArrayList<>();
+    //for control via distance sensor
+    private final PIDController controller = new PIDController(kP, kI, kD);
+    private double curSetpoint;
   
     public ElevatorSubsystem() {
-      elevatorMotor1 = new CANSparkMax(Constants.ELEVATOR_MOTOR_ID_MASTER, MotorType.kBrushless);
-      elevatorMotor2 = new CANSparkMax(Constants.ELEVATOR_MOTOR_ID_SLAVE, MotorType.kBrushless);
+      elevatorMotor1 = new CANSparkMax(ElevatorConstants.ELEVATOR_MOTOR_ID_MASTER, MotorType.kBrushless);
+      elevatorMotor2 = new CANSparkMax(ElevatorConstants.ELEVATOR_MOTOR_ID_SLAVE, MotorType.kBrushless);
+
+      distSensor = new Ultrasonic(0, 1);//change to correct channels
+      controller.setTolerance(0.3);
+      curSetpoint = 0;
+
       m_encoder1 = elevatorMotor1.getEncoder();
       m_encoder2 = elevatorMotor2.getEncoder();
 
+      elevatorMotor2.follow(elevatorMotor1, true);
+      elevatorMotor1.setInverted(true);
       elevatorMotor1.setIdleMode(IdleMode.kBrake);
       elevatorMotor1.restoreFactoryDefaults();
-      elevatorMotor1.setInverted(true);
-      elevatorMotor2.follow(elevatorMotor1, true);
-      motorList.add(elevatorMotor1);
-      motorList.add(elevatorMotor2);
 
       m_pidController1 = elevatorMotor1.getPIDController();
 
@@ -63,15 +69,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   
       // display PID coefficients on SmartDashboard
-      SmartDashboard.putNumber("P Gain", kP);
-      SmartDashboard.putNumber("I Gain", kI);
-      SmartDashboard.putNumber("D Gain", kD);
-      SmartDashboard.putNumber("I Zone", kIz);
-      SmartDashboard.putNumber("Feed Forward", kFF);
-      SmartDashboard.putNumber("Max Output", kMaxOutput);
-      SmartDashboard.putNumber("Min Output", kMinOutput);
-      SmartDashboard.putNumber("Set Rotations", 0);
-      SmartDashboard.putNumber("elevator setpoint", 0);
+      SmartDashboard.putNumber("elevator/P Gain", kP);
+      SmartDashboard.putNumber("elevator/I Gain", kI);
+      SmartDashboard.putNumber("elevator/D Gain", kD);
+      SmartDashboard.putNumber("elevator/I Zone", kIz);
+      SmartDashboard.putNumber("elevator/Feed Forward", kFF);
+      SmartDashboard.putNumber("elevator/Max Output", kMaxOutput);
+      SmartDashboard.putNumber("elevator/Min Output", kMinOutput);
+      SmartDashboard.putNumber("elevator/Set Rotations", 0);
+      SmartDashboard.putNumber("elevator/setpoint", 0);
+      SmartDashboard.putNumber("elevator/distance sensor", 0);
       //SmartDashboard.putNumber("elevator motor power", elevatorSpeed);
     }
 
@@ -79,14 +86,14 @@ public class ElevatorSubsystem extends SubsystemBase {
    
     public void moveElevator(Double setpoint) {
       // read PID coefficients from SmartDashboard
-      double p = SmartDashboard.getNumber("P Gain", 1);
-      double i = SmartDashboard.getNumber("I Gain", 0);
-      double d = SmartDashboard.getNumber("D Gain", 0);
-      double iz = SmartDashboard.getNumber("I Zone", 0);
-      double ff = SmartDashboard.getNumber("Feed Forward", 0);
-      double max = SmartDashboard.getNumber("Max Output", 0);
-      double min = SmartDashboard.getNumber("Min Output", 0);
-      double spt = SmartDashboard.getNumber("elevator setpoint", 0);
+      double p = SmartDashboard.getNumber("elevator/P Gain", 1);
+      double i = SmartDashboard.getNumber("elevator/I Gain", 0);
+      double d = SmartDashboard.getNumber("elevator/D Gain", 0);
+      double iz = SmartDashboard.getNumber("elevator/I Zone", 0);
+      double ff = SmartDashboard.getNumber("elevator/Feed Forward", 0);
+      double max = SmartDashboard.getNumber("elevator/Max Output", 0);
+      double min = SmartDashboard.getNumber("elevator/Min Output", 0);
+      double spt = SmartDashboard.getNumber("elevator/setpoint", 0);
   
       // if PID coefficients on SmartDashboard have changed, write new values to controller
       if((p != kP)) { m_pidController1.setP(p); kP = p; }
@@ -100,10 +107,52 @@ public class ElevatorSubsystem extends SubsystemBase {
       }
   
       m_pidController1.setReference(spt, CANSparkMax.ControlType.kPosition);
-      
-      
-      SmartDashboard.putNumber("ProcessVariable1", m_encoder1.getPosition());
-      SmartDashboard.putNumber("ProcessVariable2", m_encoder2.getPosition());
+
+      SmartDashboard.putNumber("elevator/ProcessVariable1", m_encoder1.getPosition());
+      SmartDashboard.putNumber("elevator/ProcessVariable2", m_encoder2.getPosition());
+    }
+
+    //should be called periodically (in a move command for elevator, in init call setCurSetpoint)
+    public void distSensorMove(double setpoint) {
+      distSensor.ping();
+      double extension = distSensor.getRangeInches() - ElevatorConstants.DISTANCE_SENSOR_OFFSET;
+      SmartDashboard.putNumber("elevator/distance sensor", extension);
+
+      if (setpoint != curSetpoint) {
+        setCurSetpoint(setpoint);
+      }
+    
+      //calculate control effort required to get elevator from current position to setpoint
+      elevatorMotor1.set(MathUtil.clamp(controller.calculate(extension, setpoint), -0.7, 0.7));
+
+      if (controller.atSetpoint()) {
+        elevatorMotor1.set(0);
+      }
+    }
+
+    //setpoint only needs to be updated if a new setpoint is set
+    private Runnable isNewSetpoint() {
+      return new Runnable() {
+        private double pressedLast = getCurSetpoint();
+        
+        @Override
+        public void run() {
+          double pressedCur = getCurSetpoint();
+
+          if (pressedLast != pressedCur) {
+            setCurSetpoint(getCurSetpoint());
+          }
+        }
+      };
+    }
+
+    public void setCurSetpoint(double setpoint) {
+      this.curSetpoint = setpoint;
+      controller.setSetpoint(setpoint);
+    }
+
+    public double getCurSetpoint() {
+      return curSetpoint;
     }
 
 
@@ -116,5 +165,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorMotor1.set(0);
       }
     }
-  
+
+    public PIDController getController() {
+      return controller;
+    }
+
+    public double getCurPosition() {
+      return distSensor.getRangeMM()/1000;
+    }
+ 
 }
