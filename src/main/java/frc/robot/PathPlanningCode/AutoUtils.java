@@ -1,9 +1,13 @@
 
 package frc.robot.PathPlanningCode;
 
+import java.util.HashMap;
 import java.util.List;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -149,31 +153,38 @@ public class AutoUtils {
 
     //to do: write score command (if for low level, no additional code is needed)
     public Command priorityOneAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
-      return simpleTrajectoryCommand(container, initDrive());
+      PathPlannerTrajectory path = PathPlanner.loadPath("Priority 1 Mobility", new PathConstraints(4, 3));
+      return followTrajectoryCommand(container, path, true);
     }
 
     //just do a backup to score and then drive forward if 180 turn still offsets gyro weirdly
     public Command priorityTwoAuto(RobotContainer container, StartPos startPos) {
-      return simpleTrajectoryCommand(container, initDriveToScore())
-      .andThen(rotate180(container))
-        .alongWith(simpleTrajectoryCommand(container, getOnChargeStation(startPos)))
-          .alongWith(new ChargeStationBalanceCommand(container.getDrive(), container.getElevator()));
+      PathPlannerTrajectory path = PathPlanner.loadPath("Priority 2 Balance on Charge Station", new PathConstraints(4, 3));
+      HashMap<String, Command> eventMap = new HashMap<>();
+      eventMap.put("Score", new ScoreGamePieceCommand(container.getElevator(), container.getIntake()));
+      FollowPathWithEvents fpwe = new FollowPathWithEvents(followTrajectoryCommand(container, path, true), path.getMarkers(), eventMap);
+      return fpwe;
     }
 
     public Command priorityThreeAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
-      return simpleTrajectoryCommand(container, initDriveToScore())
-        .andThen(rotate180(container))
-        .andThen(simpleTrajectoryCommand(container, driveToStagedGamePiece(startPos)))
-        .andThen(new IntakeCommand(container.getIntake(), 1.0))
-        .andThen(rotate180(container))
-          .deadlineWith(new VisionTranslateCommand(container.getVision(), container.getDrive(), container.getController()))
-        .andThen(new ScoreGamePieceCommand(container.getElevator(), container.getIntake()));
+      PathPlannerTrajectory path = PathPlanner.loadPath("Priority 3 auto", new PathConstraints(4, 3));
+      HashMap<String, Command> eventMap = new HashMap<>();
+      eventMap.put("Score1", new ScoreGamePieceCommand(container.getElevator(), container.getIntake()));
+      eventMap.put("pickup", new IntakeCommand(container.getIntake(), 1));
+      eventMap.put("Score2", new ScoreGamePieceCommand(container.getElevator(), container.getIntake()));
+      FollowPathWithEvents fpwe = new FollowPathWithEvents(followTrajectoryCommand(container, path, true), path.getMarkers(), eventMap);
+      return fpwe;
     }
 
     public Command priorityFourAuto(RobotContainer container, StartPos startPos, ScoringLocation location) {
-      return priorityThreeAuto(container, startPos, location)
-        .andThen(rotate180(container))
-        .andThen(simpleTrajectoryCommand(container, getOnChargeStation(startPos)));
+      // return priorityThreeAuto(container, startPos, location)
+      //   .andThen(rotate180(container))
+      //   .andThen(simpleTrajectoryCommand(container, getOnChargeStation(startPos)));
+      PathPlannerTrajectory path = PathPlanner.loadPath("Priority 4 ending", new PathConstraints(4, 3));
+      HashMap<String, Command> eventMap = new HashMap<>();
+      eventMap.put("pickup2", new IntakeCommand(container.getIntake(), 1));
+      FollowPathWithEvents fpwe = new FollowPathWithEvents(followTrajectoryCommand(container, path, true), path.getMarkers(), eventMap);
+      return fpwe;
     }
 
     //test
@@ -309,7 +320,12 @@ public class AutoUtils {
       case PRIORITY_3_AUTO:
         return priorityThreeAuto(container, startPos, location);
       case PRIORITY_4_AUTO:
-        return priorityFourAuto(container, startPos, location);
+        return priorityThreeAuto(container, startPos, location).andThen(priorityFourAuto(container, startPos, location));
+      case PRIORITY_5_2ND_PICKUP:
+        return priorityThreeAuto(container, startPos, location).andThen(null);
+      case PRIORITY_5_ENDING:
+        //@IRIS IS THIS AN ENDING OR ITS OWN THING
+        return priorityFiveEndingAuto(container, startPos, location);
       default:
         return simpleCmdGrp(container);
     }
@@ -343,6 +359,7 @@ public class AutoUtils {
   }
     
 
+  //@IRIS WE NEED BETTER NAMING
   private enum AutoModes {
     SIMPLE_DRIVE,
     SIMPLE_TRAJECTORY,
@@ -350,7 +367,11 @@ public class AutoUtils {
     PRIORITY_1_AUTO,
     PRIORITY_2_AUTO,
     PRIORITY_3_AUTO,
-    PRIORITY_4_AUTO
+    PRIORITY_4_AUTO,
+    PRIORITY_5_2ND_PICKUP,
+    PRIORITY_5_ENDING,
+    PRIORITY_6_ENDING,
+    PRIORITY_6_PICKUP,
   }
 
   private enum StartPos {
